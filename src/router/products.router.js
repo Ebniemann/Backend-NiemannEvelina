@@ -4,8 +4,6 @@ const ProductManager = require("../archivos/ProductManager");
 let products = new ProductManager("./archivo.json");
 const product = products.getProduct();
 
-console.log("eve", product);
-
 const router = Router();
 
 router.get("/", (req, res) => {

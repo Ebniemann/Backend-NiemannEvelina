@@ -1,5 +1,6 @@
 const express = require("express");
 const productRouter = require("./router/products.router");
+const cartRouter = require("./router/cart.router");
 
 const PORT = 8080;
 
@@ -8,6 +9,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/products", productRouter);
+app.use("/api/cart", cartRouter);
 
 app.get("/", (req, res) => {
   res.setHeader("Content-Type", "text/html");
