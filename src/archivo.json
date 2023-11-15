@@ -88,16 +88,5 @@
         "thumbnails": "img/accesorio-dama.jpg",
         "code": "10",
         "stock": "20"
-    },
-    {
-        "id": 11,
-        "title": "modificado3",
-        "description": "modificado3",
-        "price": 2,
-        "code": "12",
-        "status": true,
-        "stock": "20",
-        "category": "modificado3",
-        "thumbnails": "./img.png"
     }
 ]

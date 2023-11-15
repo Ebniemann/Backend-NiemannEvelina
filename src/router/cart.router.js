@@ -1,10 +1,15 @@
-const express = require("express");
-const fs = require("fs");
-const { Router } = require("express");
+import { Router } from "express";
+import fs from "fs";
 
 const cartPath = "./carrito.json";
 
-const router = Router();
+export const router = Router();
+
+router.get("/", (req, res) => {
+  const carts = getSavedCarts();
+  res.setHeader("content-type", "application/json");
+  res.status(201).json(carts);
+});
 
 router.post("/", (req, res) => {
   let carts = getSavedCarts();
@@ -49,7 +54,7 @@ router.post("/:cid/product/:pid", (req, res) => {
   res.status(201).json(cart);
 });
 
-function getSavedCarts() {
+export function getSavedCarts() {
   if (fs.existsSync(cartPath)) {
     const data = fs.readFileSync(cartPath, "utf-8");
     return JSON.parse(data);
@@ -58,8 +63,6 @@ function getSavedCarts() {
   }
 }
 
-function saveCarts(carts) {
+export function saveCarts(carts) {
   fs.writeFileSync(cartPath, JSON.stringify(carts, null, 4));
 }
-
-module.exports = router;

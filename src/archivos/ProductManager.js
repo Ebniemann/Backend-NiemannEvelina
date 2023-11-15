@@ -1,6 +1,6 @@
-const fs = require("fs");
+import fs from "fs";
 
-class ProductManager {
+export default class ProductManager {
   constructor(ruta) {
     this.path = ruta;
   }
@@ -53,8 +53,6 @@ class ProductManager {
     fs.writeFileSync(this.path, JSON.stringify(products, null, 4));
   }
 }
-
-module.exports = ProductManager;
 
 let productManager = new ProductManager("./archivo.json");
 productManager.addProduct(

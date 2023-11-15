@@ -1,0 +1,18 @@
+<h2>Productos</h2>
+
+<hr>
+<ul>
+    <strong>Productos:</strong>
+  {{#each product}}
+  <li>
+    <ul>
+      {{#each this}}
+        <li>{{@key}}: {{this}}</li>
+      {{/each}}
+    </ul>
+  </li>
+  {{/each}}
+</ul>
+<br><br>
+<a href="/realtimeproducts">Agregar / Eliminar productos</a>
+
