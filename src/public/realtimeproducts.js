@@ -1,8 +1,6 @@
 const socket = io();
 
 let divAction;
-let addAction = document.getElementById("add");
-let deleteAction = document.getElementById("delete");
 let products = document.getElementById("products");
 
 socket.on("saludo", (datos) => {
@@ -21,28 +19,12 @@ socket.on("products", (datos) => {
   });
 });
 
-socket.on("verProduct", (datos) => {
-  const newProducts = document.getElementById("productsSocket");
-  const newProduct = datos.datos;
-  const productItem = document.createElement("div");
-  productItem.innerText = `${newProduct.title} - $${newProduct.price}`;
-  newProducts.appendChild(productItem);
+socket.on("nuevoProducto", (datos) => {
+  const prod = datos.nuevoProducto;
+  alert(`Producto agregado ${prod.title}`);
 });
 
-document
-  .getElementById("formAction")
-  .addEventListener("submit", function (evento) {
-    evento.preventDefault();
-    const title = document.getElementById("add").value;
-    const price = document.getElementById("price").value;
-
-    socket.emit("agregarProducto", { title, price });
-    document.getElementById("add").value = "";
-    document.getElementById("price").value = "";
-  });
-
-// addAction.addEventListener("keyup", (evento) => {
-//   if (evento.code === "Enter") {
-//     socket.emit("add", { mensaje: evento.target.value });
-//   }
-// });
+socket.on("productoEliminado", (datos) => {
+  const productoEliminado = datos.id;
+  alert(`Producto con ID ${productoEliminado} eliminado`);
+});

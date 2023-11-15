@@ -19,10 +19,6 @@ const setupSocket = (server) => {
     socket.on("nuevoProducto", (datos) => {
       io.emit("verProduct", { datos });
     });
-
-    socket.on("agregarProducto", (datos) => {
-      io.emit("verProduct", { datos });
-    });
   });
   return io;
 };

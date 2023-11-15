@@ -46,11 +46,10 @@ const productRouter = (io) => {
       thumbnails,
     } = req.body;
 
-    if (!title || !description || !code || !price || !stock || !category) {
+    if (!title || !price) {
       res.setHeader("content-type", "application/json");
       return res.status(400).json({
-        error:
-          "title, description, code, price, stock y category son datos obligatorios ",
+        error: "title, price son datos obligatorios ",
       });
     }
 
@@ -84,7 +83,7 @@ const productRouter = (io) => {
       io.emit("nuevoProducto", { nuevoProducto: newProduct });
 
       res.setHeader("content-type", "application/json");
-      return res.status(200).json({ newProduct });
+      return res.status(200).json({ message: "Producto agregado", newProduct });
     } else {
       res.setHeader("content-type", "application/json");
       return res
@@ -165,9 +164,14 @@ const productRouter = (io) => {
       let productoEliminado = prod.splice(prodIndice, 1);
 
       products.saveProduct(prod);
-      io.emit("productoEliminado", { productoEliminado: productoEliminado });
+      io.emit("productoEliminado", {
+        id: pid,
+        productoEliminado: productoEliminado,
+      });
       res.setHeader("content-type", "application/json");
-      return res.status(200).json({ productoEliminado });
+      return res
+        .status(200)
+        .json({ message: "Producto eliminado", productoEliminado });
     } else {
       res.setHeader("content-type", "application/json");
       return res
