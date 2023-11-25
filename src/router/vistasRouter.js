@@ -23,3 +23,7 @@ router.get("/realtimeproducts", (req, res) => {
     res.status(500).render("error al obtener el producto");
   }
 });
+
+router.get("/chat", (req, res) => {
+  res.status(200).render("chat");
+});

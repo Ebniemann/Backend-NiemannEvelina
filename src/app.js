@@ -33,3 +33,4 @@ app.use("/api/cart", cartRouter);
 
 app.use("/", viewsRouter);
 app.use("/realtimeproducts", viewsRouter);
+app.use("/chat", viewsRouter);

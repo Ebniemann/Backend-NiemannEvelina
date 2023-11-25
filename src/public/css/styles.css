@@ -1,0 +1,19 @@
+#messageDiv {
+  background-color: #AED6F1;
+  border-radius: 5px;
+  padding: 10px;
+  max-width: 600px;
+  margin-bottom: 15px;
+  height: 400px;
+  overflow-y: scroll;
+}
+
+.messages {
+  display: flex;
+  align-items: center;
+  white-space: pre;
+  background-color: #D6EAF8;
+  padding: 0px 5px;
+  border-radius: 3px;
+  font-family: 'Noto Color Emoji', sans-serif;
+}
