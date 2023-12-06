@@ -3,7 +3,7 @@ import path from "path";
 import express from "express";
 import { engine } from "express-handlebars";
 import socketIo from "./socketIo.js";
-
+import mongoose from "mongoose";
 import productRouter from "./router/products-router.js";
 import { router as cartRouter } from "./router/cart.router.js";
 import { router as viewsRouter } from "./router/vistasRouter.js";
@@ -34,3 +34,13 @@ app.use("/api/cart", cartRouter);
 app.use("/", viewsRouter);
 app.use("/realtimeproducts", viewsRouter);
 app.use("/chat", viewsRouter);
+
+try {
+  await mongoose.connect(
+    "mongodb+srv://ebelen89:@cluster0.lskftra.mongodb.net/?retryWrites=true&w=majority",
+    { dbName: "ecommerce" }
+  );
+  console.log("conectado");
+} catch (error) {
+  console.log(error.message);
+}

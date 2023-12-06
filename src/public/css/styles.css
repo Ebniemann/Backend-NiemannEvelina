@@ -15,5 +15,13 @@
   background-color: #D6EAF8;
   padding: 0px 5px;
   border-radius: 3px;
-  font-family: 'Noto Color Emoji', sans-serif;
+  font-family:  sans-serif;
+}
+
+a{
+  font-family: sans-serif;
+  color: steelblue;
+  text-decoration: none;
+  font-size: 18px;
+ 
 }

@@ -47,6 +47,6 @@ Swal.fire({
   });
 
   socket.on("userDisconnect", (nombre) => {
-    Swal.fire(`Se desconecto ${nombre}`);
+    Swal.fire(`Se desconecto  ${nombre}`);
   });
 });

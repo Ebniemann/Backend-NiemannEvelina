@@ -1,5 +1,5 @@
 import { Server } from "socket.io";
-import ProductManager from "./archivos/ProductManager.js";
+import ProductManager from "./dao/ProductManagerFS.js";
 
 const products = new ProductManager("./archivo.json");
 
@@ -29,6 +29,7 @@ const setupSocket = (server) => {
 
     socket.on("menssage", (datos) => {
       menssages.push(datos);
+      console.log(menssages.push(datos));
       io.emit("newMessages", datos);
     });
 

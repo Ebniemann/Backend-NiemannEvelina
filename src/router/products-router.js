@@ -1,46 +1,57 @@
 import { Router } from "express";
-import ProductManager from "../archivos/ProductManager.js";
-
-let products = new ProductManager("./archivo.json");
-const product = products.getProduct();
+import mongoose from "mongoose";
+import { productsModels } from "../dao/models/products.models.js";
 
 const productRouter = (io) => {
   const router = Router();
 
-  router.get("/", (req, res) => {
-    const everyProducts = product;
-    if (req.query.limit === "") {
-      res.setHeader("content-type", "application/json");
-      return res.status(200).json({ everyProducts });
-    } else {
-      let result = everyProducts.slice(0, req.query.limit);
-      res.setHeader("content-type", "application/json");
-      return res.status(200).json({ result });
+  router.get("/", async (req, res) => {
+    let product = [];
+    try {
+      product = await productsModels.find();
+      res.status(200).json({ product });
+    } catch (error) {
+      console.log(error.message);
+      res.status(500).json({ error: "Error inesperado del lado del servidor" });
     }
   });
 
-  router.get("/:pid", (req, res) => {
-    const pid = req.params.pid;
-    const prod = product;
-    const proId = prod.find((p) => p.id == pid);
-    if (!proId) {
+  router.get("/:id", async (req, res) => {
+    let { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      res.setHeader("Content-type", "application/json");
+      return res.status(400).json({ error: "Ingrese un id válido." });
+    }
+
+    let existe;
+    try {
+      existe = await productsModels.findOne({ _id: id });
+    } catch (error) {
       res.setHeader("content-type", "application/json");
       return res
-        .status(400)
-        .json({ error: "No se encontro un producto con ese Id" });
-    } else {
-      res.setHeader("content-type", "application/json");
-      return res.status(200).json({ proId });
+        .status(500)
+        .json({ error: "Error inesperado del lado del servidor" });
     }
+
+    if (!existe) {
+      res.setHeader("COntent-type", "application/json");
+      return res
+        .status(400)
+        .json({ error: `No existe un producto con ese ${id}` });
+    }
+
+    res.setHeader("content-type", "application/json");
+    return res.status(200).json({ payload: existe });
   });
 
-  router.post("/", (req, res) => {
+  router.post("/", async (req, res) => {
     let {
       title,
       description,
       code,
       price,
-      status = true,
+      status,
       stock,
       category,
       thumbnails,
@@ -49,21 +60,30 @@ const productRouter = (io) => {
     if (!title || !price) {
       res.setHeader("content-type", "application/json");
       return res.status(400).json({
-        error: "title, price son datos obligatorios ",
+        error: "Titulo y precio son datos obligatorios ",
       });
     }
 
-    let prod = product;
-    let codUnico = prod.find((p) => p.code === code);
-    let newProduct;
-    if (!codUnico) {
-      let id = 1;
-      if (prod.length > 0) {
-        id = prod[prod.length - 1].id + 1;
-      }
+    let existe = false;
 
-      newProduct = {
-        id,
+    try {
+      existe = await productsModels.findOne({ deleted: false, code });
+    } catch (error) {
+      res.setHeader("content-type", "application/json");
+      return res
+        .status(500)
+        .json({ error: "Error inesperado del lado del servidor" });
+    }
+
+    if (existe) {
+      res.setHeader("COntent-type", "application/json");
+      return res
+        .status(400)
+        .json({ error: "no se puede utilizar el mismo código" });
+    }
+
+    try {
+      let newProduct = await productsModels.create({
         title,
         description,
         price,
@@ -72,19 +92,11 @@ const productRouter = (io) => {
         stock,
         category,
         thumbnails,
-      };
-      if (thumbnails) {
-        newProduct.thumbnails = thumbnails;
-      }
-
-      prod.push(newProduct);
-      products.saveProduct(prod);
-
+      });
       io.emit("nuevoProducto", { nuevoProducto: newProduct });
-
       res.setHeader("content-type", "application/json");
-      return res.status(200).json({ message: "Producto agregado", newProduct });
-    } else {
+      return res.status(200).json({ payload: newProduct });
+    } catch (error) {
       res.setHeader("content-type", "application/json");
       return res
         .status(400)
@@ -92,91 +104,96 @@ const productRouter = (io) => {
     }
   });
 
-  router.put("/:pid", (req, res) => {
-    let { pid } = req.params;
-    pid = parseInt(pid);
-    if (isNaN(pid)) {
-      res.setHeader("content-type", "application/json");
-      return res.status(400).json({ error: "Solo se acepta id numérico" });
+  router.put("/:id", async (req, res) => {
+    let { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      res.setHeader("Content-type", "application/json");
+      return res.status(400).json({ error: "Ingrese un id válido." });
     }
 
-    let prod = products.getProduct();
-    let prodId = prod.findIndex((p) => p.id === pid);
-    if (prodId === -1) {
-      res.setHeader("content-type", "application/json");
-      return res
-        .status(400)
-        .json({ error: "No existe ningún producto con ese id" });
-    }
-
-    let propiedadesAceptadas = [
-      "title",
-      "description",
-      "price",
-      "code",
-      "status",
-      "stock",
-      "category",
-      "thumbnails",
-    ];
-
-    let propiedadesObtenidas = Object.keys(req.body);
-    let propiedades = propiedadesAceptadas.every((prop) =>
-      propiedadesObtenidas.includes(prop)
-    );
-
-    if (!propiedades) {
-      res.setHeader("content-type", "application/json");
-      return res.status(400).json({ error: "Propiedades no válidas" });
-    }
-    let prodCode = product;
-    let codUnico = prodCode.find((p) => p.code === req.body.code);
-    if (codUnico) {
+    let existe;
+    try {
+      existe = await productsModels.findOne({ _id: id });
+    } catch (error) {
       res.setHeader("content-type", "application/json");
       return res
-        .status(400)
-        .json({ error: "ya existe un producto con ese codigo" });
+        .status(500)
+        .json({ error: "Error inesperado del lado del servidor" });
     }
 
-    let prodModifcado = {
-      ...prod[prodId],
-      ...req.body,
-      id: pid,
-    };
+    if (!existe) {
+      res.setHeader("COntent-type", "application/json");
+      return res
+        .status(400)
+        .json({ error: `No existe un producto con ese ${id}` });
+    }
 
-    prod[prodId] = prodModifcado;
-    products.saveProduct(prod);
-    res.setHeader("content-type", "application/json");
-    return res.status(200).json({ prodModifcado });
+    if (req.body._id) {
+      res.setHeader("Conten-Type", "application/json");
+      return res.status(400).json({ error: `No se puede modificar el "_id"` });
+    }
+
+    let newProduct;
+
+    try {
+      newProduct = await productsModels.updateOne({ _id: id }, req.body);
+      if (newProduct.modifiedCount > 0) {
+        res.setHeader("Content-Type", "application/json");
+        return res.status(200).json({ payload: "Modificación exitosa" });
+      } else {
+        res.setHeader("Content-Type", "application/json");
+        return res.status(400).json({ error: "No se realizo la modificación" });
+      }
+    } catch (error) {
+      res.setHeader("Content-Type", "application/json");
+      return res
+        .status(500)
+        .json({ error: "Error inesperado del lado del servidor" });
+    }
   });
 
-  router.delete("/:pid", (req, res) => {
-    let { pid } = req.params;
-    pid = parseInt(pid);
-    if (isNaN(pid)) {
-      res.setHeader("content-type", "application/json");
-      return res.status(400).json({ error: "Solo se acepta id numérico" });
+  router.delete("/:id", async (req, res) => {
+    let { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      res.setHeader("Content-type", "application/json");
+      return res.status(400).json({ error: "Ingrese un id válido." });
     }
 
-    let prod = products.getProduct();
-    const prodIndice = prod.findIndex((p) => p.id === pid);
-    if (prodIndice !== -1) {
-      let productoEliminado = prod.splice(prodIndice, 1);
-
-      products.saveProduct(prod);
-      io.emit("productoEliminado", {
-        id: pid,
-        productoEliminado: productoEliminado,
-      });
+    let existe;
+    try {
+      existe = await productsModels.findOne({ _id: id });
+    } catch (error) {
       res.setHeader("content-type", "application/json");
       return res
-        .status(200)
-        .json({ message: "Producto eliminado", productoEliminado });
-    } else {
-      res.setHeader("content-type", "application/json");
+        .status(500)
+        .json({ error: "Error inesperado del lado del servidor" });
+    }
+
+    if (!existe) {
+      res.setHeader("COntent-type", "application/json");
       return res
         .status(400)
-        .json({ error: "NO SE ENCONTRO UN PRODUCTO CON ESE ID" });
+        .json({ error: `No existe un producto con ese ${id}` });
+    }
+
+    try {
+      const result = await productsModels.deleteOne({ _id: id });
+      if (result.deletedCount > 0) {
+        res.setHeader("Content-Type", "application/json");
+        return res.status(200).json({ payload: "Eliminación exitosa" });
+      } else {
+        res.setHeader("Content-Type", "application/json");
+        return res
+          .status(400)
+          .json({ error: "No se puedo eliminar el producto" });
+      }
+    } catch (error) {
+      res.setHeader("Content-Type", "application/json");
+      return res
+        .status(500)
+        .json({ error: "Error inesperado del lado del servidor" });
     }
   });
   return router;
