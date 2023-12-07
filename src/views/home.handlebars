@@ -1,22 +1,18 @@
-
 <h1>HOME</h1>
 <br>
 <h2>Productos</h2>
 <hr>
 <ul>
-    <strong>Productos:</strong>
-  {{#each product}}
-  <li>
-    <ul>
-      {{#each this}}
-        <li>{{@key}}: {{this}}</li>
-      {{/each}}
-    </ul>
-  </li>
+  <strong>Productos:</strong>
+  {{#each products}}
+    <li>
+      <p><strong>Título:</strong> {{title}}</p>
+      <p><strong>Precio:</strong> {{price}}</p>
+    </li>
   {{/each}}
 </ul>
 <br>
 <br>
-<a href="/realtimeproducts">Products socketIo</a>
+{{!-- <a href="/realtimeproducts">Products socketIo</a> --}}
 <a href="/chat">Chat</a>
 

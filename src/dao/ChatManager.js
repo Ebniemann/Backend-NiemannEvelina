@@ -1,19 +1,12 @@
-export class ManagerChat {
-  async mensajes() {
-    try {
-      return await chatModels.find().lean();
-    } catch (error) {
-      console.error("Error fetching messages:", error);
-      return null;
-    }
-  }
+import { chatModels } from "./models/chat.models.js";
 
-  async saveMessage(messageData) {
+export class ManagerChat {
+  async obtenerMessage() {
     try {
-      const result = await chatModels.create(messageData);
-      console.log("Message saved successfully:", result);
+      return await chatModels.find().sort({ timestamp: 1 }).lean();
     } catch (error) {
-      console.error("Error saving message to the database:", error);
+      console.error("Error al obtener mensajes:", error);
+      return null;
     }
   }
 }

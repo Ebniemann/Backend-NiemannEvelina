@@ -1,5 +1,27 @@
 const socket = io();
 
+socket.on("connect", () => {
+  socket.emit("getStoredMessages");
+});
+
+function chatMessages(datos) {
+  let socketMessages = document.createElement("p");
+  socketMessages.innerHTML = `<strong>${datos.emisor} </strong> dice: <p> ${datos.message}</p>`;
+  socketMessages.classList.add("messages");
+  divMessage.appendChild(socketMessages);
+  divMessage.scrollTop = divMessage.scrollHeight;
+
+  console.log(chatMessages);
+}
+socket.on("storedMessages", (storedMessages) => {
+  if (storedMessages && storedMessages.length > 0) {
+    storedMessages.forEach((msg) => {
+      chatMessages(msg);
+    });
+    console.log(storedMessages);
+  }
+});
+
 let inputMessage = document.getElementById("menssage");
 let divMessage = document.getElementById("messageDiv");
 
@@ -28,12 +50,8 @@ Swal.fire({
     });
   });
 
-  socket.on("newMessages", (datos) => {
-    let socketMessages = document.createElement("p");
-    socketMessages.innerHTML = `<strong>${datos.emisor} </strong> dice: <p> ${datos.message}</p>`;
-    socketMessages.classList.add("messages");
-    divMessage.appendChild(socketMessages);
-    divMessage.scrollTop = divMessage.scrollHeight;
+  socket.on("chatMessages", (datos) => {
+    chatMessages(datos);
   });
 
   inputMessage.addEventListener("keyup", (e) => {

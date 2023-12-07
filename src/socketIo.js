@@ -1,7 +1,10 @@
 import { Server } from "socket.io";
 import ProductManager from "./dao/ProductManagerFS.js";
+import { ManagerChat } from "./dao/ChatManager.js";
+import { chatModels } from "./dao/models/chat.models.js";
 
 const products = new ProductManager("./archivo.json");
+const chatManager = new ManagerChat();
 
 const setupSocket = (server) => {
   const io = new Server(server);
@@ -9,10 +12,25 @@ const setupSocket = (server) => {
   let users = [];
   let menssages = [];
 
-  io.on("connection", (socket) => {
+  io.on("connection", async (socket) => {
     socket.emit("saludo", {
       emisor: "server",
       mensaje: "Bienvenidos a E-task",
+    });
+    try {
+      const storedMessages = await chatManager.obtenerMessage();
+      socket.emit("storedMessages", storedMessages);
+    } catch (error) {
+      console.error("Error al obtener mensajes almacenados:", error);
+    }
+
+    socket.on("getStoredMessages", async () => {
+      try {
+        const storedMessages = await chatManager.obtenerMessage();
+        socket.emit("storedMessages", storedMessages);
+      } catch (error) {
+        console.error("Error al obtener mensajes almacenados:", error);
+      }
     });
 
     socket.emit("products", { products: products.getProduct() });
@@ -25,12 +43,21 @@ const setupSocket = (server) => {
       users.push({ nombre, id: socket.id });
       socket.broadcast.emit("newUser", nombre);
       socket.emit("Bienvenido", menssages);
+      socket.userNombre = nombre;
     });
 
-    socket.on("menssage", (datos) => {
-      menssages.push(datos);
-      console.log(menssages.push(datos));
-      io.emit("newMessages", datos);
+    socket.on("menssage", async (datos) => {
+      const newMessages = new chatModels({
+        emisor: socket.userNombre,
+        message: datos.message,
+      });
+
+      try {
+        await newMessages.save();
+        io.emit("chatMessages", datos);
+      } catch (error) {
+        console.log(error);
+      }
     });
 
     socket.on("disconnect", () => {

@@ -6,11 +6,9 @@ export const chatModels = mongoose.model(
     {
       emisor: {
         type: String,
-        required: true,
       },
       message: {
         type: String,
-        required: true,
       },
       timestamp: {
         type: Date,

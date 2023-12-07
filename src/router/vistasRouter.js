@@ -1,35 +1,46 @@
 import { Router } from "express";
-import ProductManager from "../dao/ProductManagerFS.js";
-//import { ChatManager } from "../dao/ChatManager.js";
+import { managerProduct } from "../dao/ProductManagerM.js";
+import { ManagerChat } from "../dao/ChatManager.js";
 
 export const router = Router();
-const products = new ProductManager("./archivo.json");
+const productManager = new managerProduct();
+const chatManager = new ManagerChat();
 
-router.get("/", (req, res) => {
+router.get("/", async (req, res) => {
   try {
-    let product = products.getProduct();
+    const products = await productManager.listarProductos();
     res
       .status(200)
-      .render("home", { product, titulo: "Home Page", estilos: "stylesHome" });
+      .render("home", { products, titulo: "Home Page", estilos: "stylesHome" });
   } catch (error) {
     console.error("error", error);
     res.status(500).render("error al obtener el producto");
   }
 });
 
-router.get("/realtimeproducts", (req, res) => {
+//Vista del Socket Io
+// router.get("/realtimeproducts", async (req, res) => {
+//   try {
+//     const products = await productManager.listarProductos();
+//     res.status(200).render("realtimeproducts", { products });
+//   } catch (error) {
+//     console.error("Error al obtener los productos", error);
+//     res
+//       .status(500)
+//       .render("error", { errorMessage: "Error al obtener los productos" });
+//   }
+// });
+
+router.get("/chat", async (req, res) => {
   try {
-    let product = products.getProduct();
-    res.status(200).render("realtimeproducts", { product });
+    const messages = await chatManager.obtenerMessage();
+    res.status(200).render("chat", {
+      titulo: "chat",
+      estilos: "styles",
+      messages: messages || [],
+    });
   } catch (error) {
-    console.error("error", error);
-    res.status(500).render("error al obtener el producto");
+    console.error("Error al renderizar la página de chat:", error);
+    res.status(500).send("Error interno del servidor");
   }
-});
-
-router.get("/chat", (req, res) => {
-  res.status(200).render("chat", {
-    titulo: "chat",
-    estilos: "styles",
-  });
 });

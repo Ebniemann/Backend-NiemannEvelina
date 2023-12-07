@@ -5,7 +5,7 @@ export class managerProduct {
     try {
       return await productsModels.find().lean();
     } catch (error) {
-      console.log(error);
+      console.log("No se encuentran los productos", error);
       return null;
     }
   }

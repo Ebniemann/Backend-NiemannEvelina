@@ -37,7 +37,7 @@ app.use("/chat", viewsRouter);
 
 try {
   await mongoose.connect(
-    "mongodb+srv://ebelen89:@cluster0.lskftra.mongodb.net/?retryWrites=true&w=majority",
+    "mongodb+srv://ebelen89:coderapp@cluster0.lskftra.mongodb.net/?retryWrites=true&w=majority",
     { dbName: "ecommerce" }
   );
   console.log("conectado");
