@@ -1,0 +1,23 @@
+<h1>CARRITOS</h1>
+<br>
+<h2>CARRITOS DE COMPRAS</h2>
+<hr>
+<ul>
+  {{#each carts}}
+    <li>
+      <p><strong>Carrito de:</strong> {{name}}</p>
+      <ul>
+        {{#each carrito}}
+          <li>
+            <p><strong>Producto:</strong> {{producto.title}}</p>
+            <p><strong>Precio:</strong> ${{producto.price}}</p>
+          </li>
+        {{/each}}
+      </ul>
+    </li>
+  {{/each}}
+</ul>
+<br>
+<br>
+<a href="/">HOME</a>
+

@@ -50,7 +50,7 @@ router.get("/chat", async (req, res) => {
 router.get("/cart", async (req, res) => {
   try {
     const carts = await cartManager.listarCarritos();
-    res.status(200).render("Carrito", {
+    res.status(200).render("cart", {
       carts,
       titulo: "Carrito de compras",
       estilos: "stylesHome",
