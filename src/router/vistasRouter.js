@@ -1,10 +1,12 @@
 import { Router } from "express";
 import { managerProduct } from "../dao/ProductManagerM.js";
 import { ManagerChat } from "../dao/ChatManager.js";
+import { ManagerCart } from "../dao/CartManagerM.js";
 
 export const router = Router();
 const productManager = new managerProduct();
 const chatManager = new ManagerChat();
+const cartManager = new ManagerCart();
 
 router.get("/", async (req, res) => {
   try {
@@ -42,5 +44,19 @@ router.get("/chat", async (req, res) => {
   } catch (error) {
     console.error("Error al renderizar la página de chat:", error);
     res.status(500).send("Error interno del servidor");
+  }
+});
+
+router.get("/cart", async (req, res) => {
+  try {
+    const carts = await cartManager.listarCarritos();
+    res.status(200).render("Carrito", {
+      carts,
+      titulo: "Carrito de compras",
+      estilos: "stylesHome",
+    });
+  } catch (error) {
+    console.error("error", error);
+    res.status(500).render("error al obtener carrito de compras");
   }
 });

@@ -1,77 +1,93 @@
 import { Router } from "express";
 import mongoose from "mongoose";
-// import { cartsModels } from "../dao/models/carts.models.js";
-
-const cartPath = "./carrito.json";
+import { cartModel } from "../dao/models/carts.models.js";
+import { productsModels } from "../dao/models/products.models.js";
 
 export const router = Router();
 
 router.get("/", async (req, res) => {
-  let carts = [];
-
   try {
-    carts = await cartsModels.find();
+    const carts = await cartModel.find();
     res.status(200).json({ carts });
   } catch (error) {
     console.log(error.message);
-    res.status(500).json({ error: "Error inesperado del lado del servidor" });
+    res.status(500).json({
+      error: "Error inesperado del lado del servidor",
+      details: error.message,
+    });
   }
 });
 
 router.post("/", async (req, res) => {
-  let carts = [];
+  let { name, products } = req.body;
 
-  const newCart = { id, products: [] };
-  carts.push(newCart);
-
-  saveCarts(carts);
-
-  let existe = false;
   try {
-    existe = await CartsModels.findOne();
+    const productIds = products.map(
+      (productId) => new mongoose.Types.ObjectId(productId)
+    );
+
+    const productsToAdd = await productsModels.find({
+      _id: { $in: productIds },
+    });
+
+    const newCart = new cartModel({
+      name,
+      carrito: productsToAdd.map((product) => ({
+        producto: product._id,
+        quantity: 1,
+      })),
+    });
+
+    await newCart.save();
+
+    res.status(200).json({ newCart });
   } catch (error) {
-    res.setHeader("content-type", "application/json");
-    return res
-      .status(500)
-      .json({ error: "Error inesperado del lado del servidor" });
+    console.error(error.message);
+    res.status(500).json({
+      error: "Error inesperado del lado del servidor",
+      details: error.message,
+    });
   }
 });
 
-// router.post("/:cid/product/:pid", (req, res) => {
-//   const cartId = parseInt(req.params.cid);
-//   const productId = parseInt(req.params.pid);
-//   const carts = getSavedCarts();
+router.post("/:cid/product/:pid/:quantity?", async (req, res) => {
+  const { cid, pid, quantity } = req.params;
 
-//   const cart = carts.find((c) => c.id === cartId);
+  try {
+    const cart = await cartModel.findById(cid);
 
-//   if (!cart) {
-//     res.setHeader("content-type", "application/json");
-//     return res.status(404).json({ message: "Carrito no encontrado" });
-//   }
+    if (!cart) {
+      return res.status(404).json({ message: "Carrito no encontrado" });
+    }
 
-//   const product = cart.products.find((p) => p.product === productId);
+    const productToUpdate = cart.carrito.find((p) => {
+      if (p.producto && p.producto.equals(pid)) {
+        return true;
+      }
+      return false;
+    });
 
-//   if (product) {
-//     product.quantity++;
-//   } else {
-//     cart.products.push({ product: productId, quantity: 1 });
-//   }
+    const quantityToUpdate = parseInt(quantity) || 1;
 
-//   saveCarts(carts);
+    if (productToUpdate) {
+      productToUpdate.quantity += quantityToUpdate;
+    } else {
+      cart.carrito.push({
+        producto: pid,
+        quantity: quantityToUpdate,
+      });
+    }
 
-//   res.setHeader("content-type", "application/json");
-//   res.status(201).json(cart);
-// });
+    await cart.save();
 
-// export function getSavedCarts() {
-//   if (fs.existsSync(cartPath)) {
-//     const data = fs.readFileSync(cartPath, "utf-8");
-//     return JSON.parse(data);
-//   } else {
-//     return [];
-//   }
-// }
+    console.log("Carrito Actualizado:", cart);
 
-// export function saveCarts(carts) {
-//   fs.writeFileSync(cartPath, JSON.stringify(carts, null, 4));
-// }
+    res.status(201).json(cart);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({
+      error: "Error inesperado del lado del servidor",
+      details: error.message,
+    });
+  }
+});

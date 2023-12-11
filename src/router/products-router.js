@@ -76,7 +76,7 @@ const productRouter = (io) => {
     }
 
     if (existe) {
-      res.setHeader("COntent-type", "application/json");
+      res.setHeader("Content-type", "application/json");
       return res
         .status(400)
         .json({ error: "no se puede utilizar el mismo código" });
