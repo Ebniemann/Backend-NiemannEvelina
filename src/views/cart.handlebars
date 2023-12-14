@@ -3,11 +3,11 @@
 <h2>CARRITOS DE COMPRAS</h2>
 <hr>
 <ul>
-  {{#each carts}}
+  {{#if carts}}
     <li>
-      <p><strong>Carrito de:</strong> {{name}}</p>
+      <p><strong>Carrito de:</strong> {{carts.name}}</p>
       <ul>
-        {{#each carrito}}
+        {{#each carts.carrito}}
           <li>
             <p><strong>Producto:</strong> {{producto.title}}</p>
             <p><strong>Precio:</strong> ${{producto.price}}</p>
@@ -15,9 +15,14 @@
         {{/each}}
       </ul>
     </li>
-  {{/each}}
+  {{else}}
+    <li>
+      <p>{{message}}</p>
+    </li>
+  {{/if}}
 </ul>
 <br>
 <br>
 <a href="/">HOME</a>
+
 

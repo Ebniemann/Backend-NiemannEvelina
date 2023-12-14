@@ -47,16 +47,33 @@ router.get("/chat", async (req, res) => {
   }
 });
 
-router.get("/cart", async (req, res) => {
+router.get("/cart/:cid", async (req, res) => {
+  const { cid } = req.params;
+
   try {
-    const carts = await cartManager.listarCarritos();
+    const cart = await cartManager.obtenerCarritoPorId(cid);
+    console.log("carrito", cart);
     res.status(200).render("cart", {
-      carts,
-      titulo: "Carrito de compras",
+      cart,
+      name: "Carrito de compras",
       estilos: "stylesHome",
     });
   } catch (error) {
-    console.error("error", error);
+    console.error("Error al obtener carrito:", error);
     res.status(500).render("error al obtener carrito de compras");
   }
 });
+
+// router.get("/cart", async (req, res) => {
+//   try {
+//     const carts = await cartManager.listarCarritos();
+//     res.status(200).render("cart", {
+//       carts,
+//       name: "Carrito de compras",
+//       estilos: "stylesHome",
+//     });
+//   } catch (error) {
+//     console.error("error", error);
+//     res.status(500).render("error al obtener carrito de compras");
+//   }
+// });

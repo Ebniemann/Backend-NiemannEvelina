@@ -20,16 +20,4 @@ const cartsSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-cartsSchema.pre("findOne", function () {
-  this.populate({
-    path: "name carrito.producto",
-  });
-});
-
-cartsSchema.pre("find", function () {
-  this.populate({
-    path: "name carrito.producto",
-  });
-});
-
 export const cartModel = mongoose.model("carts", cartsSchema);

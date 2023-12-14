@@ -28,11 +28,11 @@ const io = socketIo(server);
 
 const routerProduct = productRouter(io);
 
-app.use("/api/products", routerProduct);
+app.use("/api/products", productRouter(io));
 app.use("/api/cart", cartRouter);
-
+app.use("/cart/:cid", viewsRouter);
 app.use("/", viewsRouter);
-app.use("/realtimeproducts", viewsRouter);
+// app.use("/realtimeproducts", viewsRouter);
 app.use("/chat", viewsRouter);
 app.use("/cart", viewsRouter);
 

@@ -6,16 +6,51 @@ const productRouter = (io) => {
   const router = Router();
 
   router.get("/", async (req, res) => {
-    let product = [];
     try {
-      product = await productsModels.find();
-      res.status(200).json({ product });
+      const limit = parseInt(req.query.limit) || 10;
+      const page = parseInt(req.query.page) || 1;
+      const sort = req.query.sort === "desc" ? -1 : 1; // -1 para descendente, 1 para ascendente
+      const query = {};
+
+      if (req.query.category) {
+        query.category = req.query.category;
+      }
+      const options = {
+        lean: true,
+        limit,
+        page,
+        sort: { price: sort },
+      };
+
+      const product = await productsModels.paginate(query, options);
+
+      const { totalPages, hasNextPage, hasPrevPage, prevPage, nextPage } =
+        product;
+
+      // res.status(200).json({
+      //   products: product.docs,
+      //   totalPages,
+      //   hasNextPage,
+      //   hasPrevPage,
+      //   prevPage,
+      //   nextPage,
+      //   limit,
+      // });
+
+      res.status(200).render("home", {
+        products: product.docs,
+        totalPages,
+        hasNextPage,
+        hasPrevPage,
+        prevPage,
+        nextPage,
+        limit,
+      });
     } catch (error) {
       console.log(error.message);
       res.status(500).json({ error: "Error inesperado del lado del servidor" });
     }
   });
-
   router.get("/:id", async (req, res) => {
     let { id } = req.params;
 
