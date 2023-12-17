@@ -1,36 +1,4 @@
-<h1>HOME</h1>
-<br>
-<h2>Productos</h2>
-<hr>
-<ul>
-  <strong>Productos:</strong>
-  {{#each products}}
-    <li>
-      <p><strong>Título:</strong> {{title}}</p>
-      <p><strong>Precio:</strong> {{price}}</p>
-      <button class="addToCartButton">Agregar al Carrito</button>
-    </li>
-  {{/each}}
-</ul>
-<br>
-<br>
-{{!-- <a href="/realtimeproducts">Products socketIo</a> --}}
-<a href="/chat">Chat</a>
-<a href="/cart">Carrito</a>
+<h2>Bienvenido</h2>
 
-<a href="/products?page=1&limit={{limit}}">Pág.1</a>
-{{#if hasPrevPage}}
-  <a href="/products?page={{prevPage}}&limit={{limit}}">Anterior</a>
-{{else}}
-  <span>No hay página anterior</span>
-{{/if}}
-
-{{#if hasNextPage}}
-  <a href="/products?page={{nextPage}}&limit={{limit}}">Siguiente</a>
-{{else}}
-  <span>No hay página siguiente</span>
-{{/if}}
-
-
-<a href="/products?page={{totalPages}}&limit={{limit}}">Ultima Pag</a>
+<p>Registrate para acceder</p>
 

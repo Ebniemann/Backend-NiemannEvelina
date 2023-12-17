@@ -37,7 +37,7 @@ const productRouter = (io) => {
       //   limit,
       // });
 
-      res.status(200).render("home", {
+      res.status(200).render("producto", {
         products: product.docs,
         totalPages,
         hasNextPage,

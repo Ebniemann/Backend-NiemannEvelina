@@ -4,13 +4,33 @@ import express from "express";
 import { engine } from "express-handlebars";
 import socketIo from "./socketIo.js";
 import mongoose from "mongoose";
+import sessions from "express-session";
+import mongoStore from "connect-mongo";
+
 import productRouter from "./router/products-router.js";
 import { router as cartRouter } from "./router/cart.router.js";
 import { router as viewsRouter } from "./router/vistasRouter.js";
+import { router as loginRouter } from "./router/login-router.js";
 
 const PORT = 8080;
 
 const app = express();
+
+app.use(
+  sessions({
+    secret: "coder123",
+    resave: true,
+    saveUninitialized: true,
+    store: mongoStore.create({
+      mongoUrl:
+        "mongodb+srv://ebelen89:coderapp@cluster0.lskftra.mongodb.net/?retryWrites=true&w=majority",
+      mongoOptions: {
+        dbName: "login",
+      },
+    }),
+  })
+);
+
 app.engine("handlebars", engine());
 app.set("view engine", "handlebars");
 app.set("views", path.join(__dirname, "/views"));
@@ -30,11 +50,15 @@ const routerProduct = productRouter(io);
 
 app.use("/api/products", productRouter(io));
 app.use("/api/cart", cartRouter);
+app.use("/api/sessions", loginRouter);
 app.use("/cart/:cid", viewsRouter);
 app.use("/", viewsRouter);
-// app.use("/realtimeproducts", viewsRouter);
+app.use("/registro", viewsRouter);
+app.use("/login", viewsRouter);
+app.use("/producto", viewsRouter);
 app.use("/chat", viewsRouter);
 app.use("/cart", viewsRouter);
+// app.use("/realtimeproducts", viewsRouter);
 
 try {
   await mongoose.connect(

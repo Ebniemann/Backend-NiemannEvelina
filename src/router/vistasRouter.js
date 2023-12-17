@@ -8,32 +8,36 @@ const productManager = new managerProduct();
 const chatManager = new ManagerChat();
 const cartManager = new ManagerCart();
 
-router.get("/", async (req, res) => {
+const auth = (req, res, next) => {
+  if (!req.session.usuario) {
+    res.redirect("/login");
+  }
+  next();
+};
+
+router.get("/", (req, res) => {
+  res.setHeader("Content-Type", "text/html");
+  res.status(200).render("home");
+});
+
+router.get("/producto", auth, async (req, res) => {
   try {
+    let usuario = req.session.usuario;
     const products = await productManager.listarProductos();
-    res
-      .status(200)
-      .render("home", { products, titulo: "Home Page", estilos: "stylesHome" });
+
+    res.status(200).render("producto", {
+      usuario,
+      products,
+      titulo: "Productos",
+      estilos: "stylesHome",
+    });
   } catch (error) {
-    console.error("error", error);
+    console.error("Error al obtener productos:", error);
     res.status(500).render("error al obtener el producto");
   }
 });
 
-//Vista del Socket Io
-// router.get("/realtimeproducts", async (req, res) => {
-//   try {
-//     const products = await productManager.listarProductos();
-//     res.status(200).render("realtimeproducts", { products });
-//   } catch (error) {
-//     console.error("Error al obtener los productos", error);
-//     res
-//       .status(500)
-//       .render("error", { errorMessage: "Error al obtener los productos" });
-//   }
-// });
-
-router.get("/chat", async (req, res) => {
+router.get("/chat", auth, async (req, res) => {
   try {
     const messages = await chatManager.obtenerMessage();
     res.status(200).render("chat", {
@@ -52,7 +56,7 @@ router.get("/cart/:cid", async (req, res) => {
 
   try {
     const cart = await cartManager.obtenerCarritoPorId(cid);
-    console.log("carrito", cart);
+
     res.status(200).render("cart", {
       cart,
       name: "Carrito de compras",
@@ -63,6 +67,38 @@ router.get("/cart/:cid", async (req, res) => {
     res.status(500).render("error al obtener carrito de compras");
   }
 });
+
+router.get("/registro", (req, res) => {
+  let { error } = req.query;
+  res.setHeader("Content-Type", "text/html");
+  res
+    .status(200)
+    .render("registro", { error, titulo: "Registro", estilos: "stylesHome" });
+});
+
+router.get("/login", (req, res) => {
+  let { error, mensaje } = req.query;
+  res.setHeader("Content-Type", "text/html");
+  res.status(200).render("login", {
+    error,
+    mensaje,
+    titulo: "Login",
+    estilos: "stylesHome",
+  });
+});
+
+//Vista del Socket Io
+// router.get("/realtimeproducts", async (req, res) => {
+//   try {
+//     const products = await productManager.listarProductos();
+//     res.status(200).render("realtimeproducts", { products });
+//   } catch (error) {
+//     console.error("Error al obtener los productos", error);
+//     res
+//       .status(500)
+//       .render("error", { errorMessage: "Error al obtener los productos" });
+//   }
+// });
 
 // router.get("/cart", async (req, res) => {
 //   try {
