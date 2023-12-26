@@ -9,7 +9,7 @@ const usuarioEsquema = new mongoose.Schema(
       type: String,
       unique: true,
     },
-    contraseña: String,
+    password: String,
     rol: {
       type: String,
       default: "usuario",

@@ -12,6 +12,9 @@ import { router as cartRouter } from "./router/cart.router.js";
 import { router as viewsRouter } from "./router/vistasRouter.js";
 import { router as loginRouter } from "./router/login-router.js";
 
+import { inicializarPassport } from "./config/config.passport.js";
+import passport from "passport";
+
 const PORT = 8080;
 
 const app = express();
@@ -37,6 +40,10 @@ app.set("views", path.join(__dirname, "/views"));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+inicializarPassport();
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use(express.static(path.join(__dirname, "/public")));
 
