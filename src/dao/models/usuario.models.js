@@ -15,7 +15,7 @@ const usuarioEsquema = new mongoose.Schema(
       default: "usuario",
     },
   },
-  { timestamps: true }
+  { timestamps: true, strict: false }
 );
 
 const loginConnection = mongoose.createConnection(

@@ -12,7 +12,7 @@ router.get("/errorLogin", (req, res) => {
   }
 });
 
-router.post(
+router.get(
   "/login",
   passport.authenticate("login", {
     failureRedirect: "/api/sessions/errorLogin",
