@@ -87,6 +87,20 @@ router.get("/login", (req, res) => {
   });
 });
 
+router.get("/perfil", auth, async (req, res) => {
+  try {
+    const usuario = req.session.usuario;
+    res.status(200).render("perfil", {
+      usuario,
+      titulo: "Perfil",
+      estilos: "stylesHome",
+    });
+  } catch (error) {
+    console.error("Error al obtener el perfil del usuario:", error);
+    res.status(500).render("error al obtener el perfil del usuario");
+  }
+});
+
 //Vista del Socket Io
 // router.get("/realtimeproducts", async (req, res) => {
 //   try {

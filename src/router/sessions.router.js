@@ -44,7 +44,7 @@ router.post(
         };
       }
 
-      res.redirect("/producto");
+      res.redirect("/perfil");
     } catch (error) {
       console.error("Error en el proceso de inicio de sesión:", error);
       res.redirect(
