@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const usuarioEsquema = new mongoose.Schema(
+const registroEsquema = new mongoose.Schema(
   {
     nombre: String,
     apellido: String,
@@ -14,7 +14,6 @@ const usuarioEsquema = new mongoose.Schema(
       type: String,
       default: "usuario",
     },
-    // cart: { type: mongoose.Schema.Types.ObjectId, ref: "Cart" },
   },
   { timestamps: true, strict: false }
 );
@@ -24,4 +23,7 @@ const loginConnection = mongoose.createConnection(
   { useNewUrlParser: true, useUnifiedTopology: true }
 );
 
-export const usuarioModels = loginConnection.model("usuarios", usuarioEsquema);
+export const registroModels = loginConnection.model(
+  "usuarios",
+  registroEsquema
+);

@@ -10,7 +10,7 @@ import mongoStore from "connect-mongo";
 import productRouter from "./router/products-router.js";
 import { router as cartRouter } from "./router/cart.router.js";
 import { router as viewsRouter } from "./router/vistasRouter.js";
-import { router as loginRouter } from "./router/login-router.js";
+// import { router as loginRouter } from "./router/login-router.js";
 import { router as sessionsRouter } from "./router/sessions.router.js";
 
 import { inicializarPassport } from "./config/config.passport.js";
@@ -57,9 +57,9 @@ const io = socketIo(server);
 const routerProduct = productRouter(io);
 
 app.use("/api/products", productRouter(io));
+// app.use("/api/sessions", loginRouter);
 app.use("/api/sessions", sessionsRouter);
 app.use("/api/cart", cartRouter);
-app.use("/api/sessions", loginRouter);
 app.use("/cart/:cid", viewsRouter);
 app.use("/", viewsRouter);
 app.use("/registro", viewsRouter);

@@ -66,14 +66,16 @@ export const inicializarPassport = () => {
             return done(null, false);
           }
 
-          let usuario = await usuarioModels.findOne({ email: username }).lean();
+          const usuario = await usuarioModels
+            .findOne({ email: username })
+            .lean();
 
           if (!usuario) {
-            return done(null, false);
+            return done(null, false, { message: "Credenciales incorrectas" });
           }
 
           if (!validaPassword(usuario, password)) {
-            return done(null, false);
+            return done(null, false, { message: "Credenciales incorrectas" });
           }
 
           delete usuario.password;
