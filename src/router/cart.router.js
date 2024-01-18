@@ -31,7 +31,6 @@ router.post("/", async (req, res) => {
     });
 
     const newCart = new cartModel({
-      name,
       carrito: productsToAdd.map((product) => ({
         producto: product._id,
         quantity: 1,

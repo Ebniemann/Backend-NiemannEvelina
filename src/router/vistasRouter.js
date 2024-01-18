@@ -69,6 +69,8 @@ router.get("/cart/:cid", async (req, res) => {
 });
 
 router.get("/registro", (req, res) => {
+  console.log("Sesión después de almacenar el usuario:", req.session);
+
   let { error } = req.query;
   res.setHeader("Content-Type", "text/html");
   res
@@ -90,6 +92,8 @@ router.get("/login", (req, res) => {
 router.get("/perfil", auth, async (req, res) => {
   try {
     const usuario = req.session.usuario;
+    console.log("Usuario en la sesión:", usuario);
+
     res.status(200).render("perfil", {
       usuario,
       titulo: "Perfil",

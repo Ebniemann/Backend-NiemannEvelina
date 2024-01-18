@@ -41,6 +41,8 @@ router.post(
           nombre: req.user.nombre,
           email: req.user.email,
           rol: req.user.rol,
+          edad: req.user.edad,
+          apellido: req.user.apelldio,
         };
       }
 

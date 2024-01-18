@@ -14,7 +14,7 @@ const usuarioEsquema = new mongoose.Schema(
       type: String,
       default: "usuario",
     },
-    // cart: { type: mongoose.Schema.Types.ObjectId, ref: "Cart" },
+    cart: { type: mongoose.Schema.Types.ObjectId, ref: "carts" },
   },
   { timestamps: true, strict: false }
 );

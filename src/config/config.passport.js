@@ -3,6 +3,8 @@ import local from "passport-local";
 import github from "passport-github2";
 import { usuarioModels } from "../dao/models/usuario.models.js";
 import { creaHash, validaPassword } from "../utils.js";
+import { cartModel } from "../dao/models/carts.models.js";
+import mongoose from "mongoose";
 
 export const inicializarPassport = () => {
   passport.use(
@@ -13,41 +15,37 @@ export const inicializarPassport = () => {
         usernameField: "email",
       },
       async (req, username, password, done) => {
-        //aca va la logica de registro que la traigo de login-router
         try {
-          let { nombre, apellido, edad, email } = req.body;
+          const { nombre, apellido, edad, email } = req.body;
+
           if (!nombre || !apellido || !edad || !email || !password) {
+            console.error("Datos de usuario incompletos.");
             return done(null, false);
           }
 
-          let existe = await usuarioModels.findOne({ email });
+          const existe = await usuarioModels.findOne({ email });
           if (existe) {
+            console.error("El usuario ya existe.");
             return done(null, false);
           }
 
-          password = creaHash(password);
+          const nuevoCarrito = await cartModel.create();
+          console.log("Nuevo carrito creado:", nuevoCarrito);
 
-          let usuario;
+          const hashedPassword = creaHash(password);
 
-          try {
-            usuario = await usuarioModels.create({
-              nombre,
-              apellido,
-              edad,
-              email,
-              password,
-            });
+          const usuario = await usuarioModels.create({
+            nombre,
+            apellido,
+            edad,
+            email,
+            cart: nuevoCarrito._id,
+            password: hashedPassword,
+          });
 
-            return done(null, usuario);
-
-            //previo a devolver un usuario con done, passport graba en la req una propiedad
-            // user, con los datos del uduario. Luego pueod hacer req.user y obtener los datos
-          } catch (error) {
-            console.error("Error creating user:", error);
-            return done(null, false);
-          }
+          return done(null, usuario);
         } catch (error) {
-          console.error("Error in passport.use callback:", error);
+          console.error("Error en passport.use callback:", error);
           return done(error);
         }
       }
