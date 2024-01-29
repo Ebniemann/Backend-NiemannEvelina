@@ -1,6 +1,6 @@
-import { productsModels } from "./models/products.models.js";
+import { productsModels } from "../models/products.models.js";
 
-export class managerProduct {
+export class ManagerProduct {
   async listarProductos() {
     try {
       return await productsModels.find().lean();

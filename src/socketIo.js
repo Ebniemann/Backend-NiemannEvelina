@@ -1,6 +1,6 @@
 import { Server } from "socket.io";
-import ProductManager from "./dao/ProductManagerFS.js";
-import { ManagerChat } from "./dao/ChatManager.js";
+import ProductManager from "./dao/Manager/ProductManagerFS.js";
+import { ManagerChat } from "./dao/Manager/ChatManager.js";
 import { chatModels } from "./dao/models/chat.models.js";
 
 const products = new ProductManager("./archivo.json");

@@ -1,4 +1,4 @@
-import { cartModel } from "./models/carts.models.js";
+import { cartModel } from "../models/carts.models.js";
 
 export class ManagerCart {
   async listarCarritos() {
@@ -12,7 +12,10 @@ export class ManagerCart {
 
   async obtenerCarritoPorId(cartId) {
     try {
-      return await cartModel.findById(cartId).lean();
+      return await cartModel
+        .findById(cartId)
+        .populate("carrito.producto")
+        .lean();
     } catch (error) {
       console.log("No se encuentran los productos", error);
       return null;

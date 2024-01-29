@@ -24,4 +24,5 @@ const loginConnection = mongoose.createConnection(
   { useNewUrlParser: true, useUnifiedTopology: true }
 );
 
-export const usuarioModels = loginConnection.model("usuarios", usuarioEsquema);
+const usuarioModels = loginConnection.model("usuarios", usuarioEsquema);
+export { usuarioModels, loginConnection };

@@ -58,13 +58,13 @@ const routerProduct = productRouter(io);
 app.use("/api/products", productRouter(io));
 app.use("/api/sessions", sessionsRouter);
 app.use("/api/cart", cartRouter);
-app.use("/cart/:cid", viewsRouter);
 app.use("/", viewsRouter);
-app.use("/registro", viewsRouter);
-app.use("/login", viewsRouter);
-app.use("/producto", viewsRouter);
-app.use("/chat", viewsRouter);
-app.use("/cart", viewsRouter);
+// app.use("/cart/:cid", viewsRouter);
+// app.use("/registro", viewsRouter);
+// app.use("/login", viewsRouter);
+// app.use("/producto", viewsRouter);
+// app.use("/chat", viewsRouter);
+// app.use("/cart", viewsRouter);
 // app.use("/realtimeproducts", viewsRouter);
 
 try {

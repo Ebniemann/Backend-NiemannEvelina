@@ -29,7 +29,7 @@ export const inicializarPassport = () => {
             return done(null, false);
           }
 
-          const nuevoCarrito = await cartModel.create();
+          const nuevoCarrito = await cartModel.create({});
           console.log("Nuevo carrito creado:", nuevoCarrito);
 
           const hashedPassword = creaHash(password);
@@ -79,7 +79,7 @@ export const inicializarPassport = () => {
           delete usuario.password;
           return done(null, usuario);
         } catch (error) {
-          done(error, null);
+          return done(error, null);
         }
       }
     )

@@ -1,4 +1,4 @@
-import { chatModels } from "./models/chat.models.js";
+import { chatModels } from "../models/chat.models.js";
 
 export class ManagerChat {
   async obtenerMessage() {

@@ -1,0 +1,3 @@
+class SessionsService {
+  constructor(dao) {}
+}
