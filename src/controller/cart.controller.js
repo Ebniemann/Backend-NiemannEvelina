@@ -6,10 +6,8 @@ export class CartController {
   static async getCart(req, res) {
     try {
       const carts = await cartModel.find();
-      console.log("carrito", carts);
       res.status(200).json({ carts });
     } catch (error) {
-      console.log(error.message);
       res.status(500).json({
         error: "Error inesperado del lado del servidor",
       });

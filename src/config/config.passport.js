@@ -60,6 +60,7 @@ export const inicializarPassport = () => {
       },
       async (username, password, done) => {
         try {
+          console.log("Username recibido en la estrategia de login:", username);
           if (!username || !password) {
             return done(null, false);
           }
@@ -79,7 +80,7 @@ export const inicializarPassport = () => {
           delete usuario.password;
           return done(null, usuario);
         } catch (error) {
-          return done(error, null);
+          return done(error, "error en el login");
         }
       }
     )

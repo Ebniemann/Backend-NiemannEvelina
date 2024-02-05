@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { productsModels } from "../dao/models/products.models.js";
+import { ProductService } from "../Services/products.service.js";
 
 export class ProductController {
   static async getProduct(req, res) {
@@ -19,20 +20,10 @@ export class ProductController {
         sort: { price: sort },
       };
 
-      const product = await productsModels.paginate(query, options);
+      const product = await ProductService.getProducts(query, options);
 
       const { totalPages, hasNextPage, hasPrevPage, prevPage, nextPage } =
         product;
-
-      // res.status(200).json({
-      //   products: product.docs,
-      //   totalPages,
-      //   hasNextPage,
-      //   hasPrevPage,
-      //   prevPage,
-      //   nextPage,
-      //   limit,
-      // });
 
       res.status(200).render("producto", {
         products: product.docs,
@@ -56,26 +47,14 @@ export class ProductController {
       res.setHeader("Content-type", "application/json");
       return res.status(400).json({ error: "Ingrese un id válido." });
     }
-
-    let existe;
     try {
-      existe = await productsModels.findOne({ _id: id });
+      const product = await ProductService.getProductById(id);
+      res.setHeader("content-type", "application/json");
+      return res.status(200).json({ payload: product });
     } catch (error) {
       res.setHeader("content-type", "application/json");
-      return res
-        .status(500)
-        .json({ error: "Error inesperado del lado del servidor" });
+      return res.status(500).json({ error: error.message });
     }
-
-    if (!existe) {
-      res.setHeader("COntent-type", "application/json");
-      return res
-        .status(400)
-        .json({ error: `No existe un producto con ese ${id}` });
-    }
-
-    res.setHeader("content-type", "application/json");
-    return res.status(200).json({ payload: existe });
   }
 
   static async postProduct(req, res) {
@@ -97,30 +76,12 @@ export class ProductController {
       });
     }
 
-    let existe = false;
-
     try {
-      existe = await productsModels.findOne({ deleted: false, code });
-    } catch (error) {
-      res.setHeader("content-type", "application/json");
-      return res
-        .status(500)
-        .json({ error: "Error inesperado del lado del servidor" });
-    }
-
-    if (existe) {
-      res.setHeader("Content-type", "application/json");
-      return res
-        .status(400)
-        .json({ error: "no se puede utilizar el mismo código" });
-    }
-
-    try {
-      let newProduct = await productsModels.create({
+      const newProduct = await ProductService.createProduct({
         title,
         description,
-        price,
         code,
+        price,
         status,
         stock,
         category,

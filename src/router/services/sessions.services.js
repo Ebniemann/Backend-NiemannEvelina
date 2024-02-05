@@ -1,3 +1,0 @@
-class SessionsService {
-  constructor(dao) {}
-}
