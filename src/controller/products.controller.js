@@ -106,44 +106,15 @@ export class ProductController {
       return res.status(400).json({ error: "Ingrese un id válido." });
     }
 
-    let existe;
-    try {
-      existe = await productsModels.findOne({ _id: id });
-    } catch (error) {
-      res.setHeader("content-type", "application/json");
-      return res
-        .status(500)
-        .json({ error: "Error inesperado del lado del servidor" });
-    }
-
-    if (!existe) {
-      res.setHeader("COntent-type", "application/json");
-      return res
-        .status(400)
-        .json({ error: `No existe un producto con ese ${id}` });
-    }
-
-    if (req.body._id) {
-      res.setHeader("Conten-Type", "application/json");
-      return res.status(400).json({ error: `No se puede modificar el "_id"` });
-    }
-
-    let newProduct;
+    const updatedData = req.body;
 
     try {
-      newProduct = await productsModels.updateOne({ _id: id }, req.body);
-      if (newProduct.modifiedCount > 0) {
-        res.setHeader("Content-Type", "application/json");
-        return res.status(200).json({ payload: "Modificación exitosa" });
-      } else {
-        res.setHeader("Content-Type", "application/json");
-        return res.status(400).json({ error: "No se realizo la modificación" });
-      }
+      const result = await ProductService.updateProduct(id, updatedData);
+      res.setHeader("Content-Type", "application/json");
+      return res.status(200).json({ payload: result });
     } catch (error) {
       res.setHeader("Content-Type", "application/json");
-      return res
-        .status(500)
-        .json({ error: "Error inesperado del lado del servidor" });
+      return res.status(500).json({ error: error.message });
     }
   }
 
@@ -155,39 +126,13 @@ export class ProductController {
       return res.status(400).json({ error: "Ingrese un id válido." });
     }
 
-    let existe;
     try {
-      existe = await productsModels.findOne({ _id: id });
-    } catch (error) {
-      res.setHeader("content-type", "application/json");
-      return res
-        .status(500)
-        .json({ error: "Error inesperado del lado del servidor" });
-    }
-
-    if (!existe) {
-      res.setHeader("COntent-type", "application/json");
-      return res
-        .status(400)
-        .json({ error: `No existe un producto con ese ${id}` });
-    }
-
-    try {
-      const result = await productsModels.deleteOne({ _id: id });
-      if (result.deletedCount > 0) {
-        res.setHeader("Content-Type", "application/json");
-        return res.status(200).json({ payload: "Eliminación exitosa" });
-      } else {
-        res.setHeader("Content-Type", "application/json");
-        return res
-          .status(400)
-          .json({ error: "No se puedo eliminar el producto" });
-      }
+      const result = await ProductService.deletedProduct(id);
+      res.setHeader("Content-Type", "application/json");
+      return res.status(200).json({ payload: result });
     } catch (error) {
       res.setHeader("Content-Type", "application/json");
-      return res
-        .status(500)
-        .json({ error: "Error inesperado del lado del servidor" });
+      return res.status(500).json({ error: error.message });
     }
   }
 }
