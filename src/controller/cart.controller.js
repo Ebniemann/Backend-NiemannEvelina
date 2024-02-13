@@ -1,11 +1,12 @@
 import { cartModel } from "../dao/models/carts.models.js";
 import { productsModels } from "../dao/models/products.models.js";
 import mongoose from "mongoose";
+import { CartService } from "../Services/cart.service.js";
 
 export class CartController {
   static async getCart(req, res) {
     try {
-      const carts = await cartModel.find();
+      const carts = await CartService.getCart();
       res.status(200).json({ carts });
     } catch (error) {
       res.status(500).json({
@@ -22,18 +23,7 @@ export class CartController {
         (productId) => new mongoose.Types.ObjectId(productId)
       );
 
-      const productsToAdd = await productsModels.find({
-        _id: { $in: productIds },
-      });
-
-      const newCart = new cartModel({
-        carrito: productsToAdd.map((product) => ({
-          producto: product._id,
-          quantity: 1,
-        })),
-      });
-
-      await newCart.save();
+      const newCart = await CartService.createCart(name, productIds);
 
       res.status(200).json({ newCart });
     } catch (error) {
@@ -46,38 +36,13 @@ export class CartController {
   }
 
   static async putCart(req, res) {
-    const { cid, pid, quantity } = req.params;
+    const { cid, productId, quantity } = req.params;
 
     try {
-      const cart = await cartModel.findById(cid);
+      const updateCart = await CartService.updateCart(cid, productId, quantity);
 
-      if (!cart) {
-        return res.status(404).json({ message: "Carrito no encontrado" });
-      }
-
-      const productToUpdate = cart.carrito.find((p) => {
-        if (p.producto && p.producto.equals(pid)) {
-          return true;
-        }
-        return false;
-      });
-
-      const quantityToUpdate = parseInt(quantity) || 1;
-
-      if (productToUpdate) {
-        productToUpdate.quantity += quantityToUpdate;
-      } else {
-        cart.carrito.push({
-          producto: pid,
-          quantity: quantityToUpdate,
-        });
-      }
-
-      await cart.save();
-
-      console.log("Carrito Actualizado:", cart);
-
-      res.status(201).json(cart);
+      console.log("Carrito actualizado", updateCart);
+      res.status(201).json(updateCart);
     } catch (error) {
       console.error(error.message);
       res.status(500).json({
@@ -88,40 +53,18 @@ export class CartController {
   }
 
   static async deleteProductCart(req, res) {
-    const { cid, pid } = req.params;
+    const { cid, productId } = req.params;
     if (!mongoose.Types.ObjectId.isValid(cid)) {
       res.setHeader("Content-type", "application/json");
       return res.status(400).json({ error: "Ingrese un id válido." });
     }
 
-    let existe;
     try {
-      existe = await cartModel.findOne({ _id: cid });
+      const result = await CartService.deleteProductCart(cid, productId);
+      res.setHeader("Content-Type", "application/json");
+      return res.status(200).json({ payload: result });
     } catch (error) {
-      res.setHeader("content-type", "application/json");
-      return res.status(500).json({ error: "no se encontro el carrito" });
-    }
-    if (!existe) {
-      res.setHeader("COntent-type", "application/json");
-      return res
-        .status(400)
-        .json({ error: `No existe un carrito con ese ${cid}` });
-    }
-    try {
-      const result = await cartModel.updateOne(
-        { _id: cid },
-        { $pull: { products: { _id: pid } } }
-      );
-      if (result.nModified > 0) {
-        res.setHeader("Content-Type", "application/json");
-        return res.status(200).json({ payload: "Eliminación exitosa" });
-      } else {
-        res.setHeader("Content-Type", "application/json");
-        return res
-          .status(400)
-          .json({ error: "No se puedo eliminar el producto" });
-      }
-    } catch (error) {
+      console.error(error.message);
       res.setHeader("Content-Type", "application/json");
       return res.status(500).json({ error: "Error del lado del servidor" });
     }
@@ -138,24 +81,13 @@ export class CartController {
     }
 
     try {
-      const result = await cartModel.updateOne(
-        { _id: cid },
-        { $set: { carrito: [] } }
-      );
-
-      if (result.nModified > 0) {
-        res.setHeader("Content-Type", "application/json");
-        return res.status(200).json({
-          payload: "Eliminación exitosa de todos los productos del carrito",
-        });
-      } else {
-        res.setHeader("Content-Type", "application/json");
-        return res
-          .status(400)
-          .json({ error: "No se pudieron eliminar los productos del carrito" });
-      }
+      const result = await CartService.deleteCart(cid);
+      res.setHeader("Content-Type", "application/json");
+      return res.status(200).json({
+        payload: result,
+      });
     } catch (error) {
-      console.error(error);
+      console.error(error.message);
       res.setHeader("Content-Type", "application/json");
       return res.status(500).json({
         error:
