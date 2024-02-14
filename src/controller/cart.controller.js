@@ -36,10 +36,10 @@ export class CartController {
   }
 
   static async putCart(req, res) {
-    const { cid, productId, quantity } = req.params;
+    const { cid, pid, quantity } = req.params;
 
     try {
-      const updateCart = await CartService.updateCart(cid, productId, quantity);
+      const updateCart = await CartService.updateCart(cid, pid, quantity);
 
       console.log("Carrito actualizado", updateCart);
       res.status(201).json(updateCart);
@@ -53,14 +53,14 @@ export class CartController {
   }
 
   static async deleteProductCart(req, res) {
-    const { cid, productId } = req.params;
+    const { cid, pid } = req.params;
     if (!mongoose.Types.ObjectId.isValid(cid)) {
       res.setHeader("Content-type", "application/json");
       return res.status(400).json({ error: "Ingrese un id válido." });
     }
 
     try {
-      const result = await CartService.deleteProductCart(cid, productId);
+      const result = await CartService.deleteProductCart(cid, pid);
       res.setHeader("Content-Type", "application/json");
       return res.status(200).json({ payload: result });
     } catch (error) {
@@ -92,6 +92,21 @@ export class CartController {
       return res.status(500).json({
         error:
           "Error en el servidor al intentar eliminar los productos del carrito",
+      });
+    }
+  }
+
+  static async purchaseCart() {
+    const { cid } = req.params;
+
+    try {
+      const resultado = await CartService.purchaseCart(cid);
+      res.status(200).json(resultado);
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).json({
+        error: "Error inesperado del lado del servidor",
+        details: error.message,
       });
     }
   }

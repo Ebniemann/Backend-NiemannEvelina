@@ -54,4 +54,30 @@ export class ProductDao {
       throw new Error(`Error al eliminar el producto: ${error.message}`);
     }
   }
+
+  static async getProductsPrice(id) {
+    try {
+      const productos = await productsModels.findById(id);
+      if (!productos) {
+        throw new Error("Producto no encontrado");
+      }
+      return productos.price;
+    } catch (error) {
+      console.error(error.message);
+      throw new Error("Error al obtener el precio del producto");
+    }
+  }
+  static async getValidaStock(id) {
+    const producto = await productsModels.findById(id);
+    return producto ? producto.stock : 0;
+  }
+
+  static async updateStock(id, quantity) {
+    const producto = await productsModels.findById(id);
+
+    if (producto) {
+      producto.stock -= quantity;
+      await producto.save();
+    }
+  }
 }

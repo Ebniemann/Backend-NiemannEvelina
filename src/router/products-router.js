@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { ProductController } from "../controller/products.controller.js";
+import { autorizacion } from "../middleware/autorizacion.js";
 
 const productRouter = (io) => {
   const router = Router();
@@ -8,11 +9,15 @@ const productRouter = (io) => {
 
   router.get("/:id", ProductController.getProductId);
 
-  router.post("/", ProductController.postProduct);
+  router.post("/", autorizacion(["admin"]), ProductController.postProduct);
 
-  router.put("/:id", ProductController.putProduct);
+  router.put("/:id", autorizacion(["admin"]), ProductController.putProduct);
 
-  router.delete("/:id", ProductController.deleteProduct);
+  router.delete(
+    "/:id",
+    autorizacion(["admin"]),
+    ProductController.deleteProduct
+  );
   return router;
 };
 

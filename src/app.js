@@ -6,14 +6,18 @@ import socketIo from "./socketIo.js";
 import mongoose from "mongoose";
 import sessions from "express-session";
 import mongoStore from "connect-mongo";
-
 import productRouter from "./router/products-router.js";
 import { router as cartRouter } from "./router/cart.router.js";
 import { router as viewsRouter } from "./router/vistasRouter.js";
 import { router as sessionsRouter } from "./router/sessions.router.js";
-
 import { inicializarPassport } from "./config/config.passport.js";
 import passport from "passport";
+
+import passportJWT from "jsonwebtoken";
+import { SECRETKEY } from "./utils.js";
+
+const ExtractJwt = passportJWT.ExtractJwt;
+const JwtStrategy = passportJWT.Strategy;
 
 const PORT = 8080;
 
@@ -44,6 +48,11 @@ app.use(express.urlencoded({ extended: true }));
 inicializarPassport();
 app.use(passport.initialize());
 app.use(passport.session());
+
+const jwtOptions = {
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  secretOrKey: SECRETKEY,
+};
 
 app.use(express.static(path.join(__dirname, "/public")));
 

@@ -2,9 +2,11 @@ import passport from "passport";
 import local from "passport-local";
 import github from "passport-github2";
 import { usuarioModels } from "../dao/models/usuario.models.js";
-import { creaHash, validaPassword } from "../utils.js";
+import { creaHash, validaPassword, SECRETKEY } from "../utils.js";
 import { cartModel } from "../dao/models/carts.models.js";
 import mongoose from "mongoose";
+import { usuarioDto } from "../dao/DTO/dto.js";
+import { Strategy as JwtStrategy, ExtractJwt } from "passport-jwt";
 
 export const inicializarPassport = () => {
   passport.use(
@@ -113,6 +115,20 @@ export const inicializarPassport = () => {
         } catch (error) {
           return done(error);
         }
+      }
+    )
+  );
+
+  passport.use(
+    new JwtStrategy(
+      {
+        jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+        secretOrKey: SECRETKEY,
+      },
+      (jwtPayload, done) => {
+        const userDTO = new usuarioDto(...Object.values(jwtPayload));
+
+        return done(null, userDTO);
       }
     )
   );
