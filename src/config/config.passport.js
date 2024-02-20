@@ -8,6 +8,11 @@ import mongoose from "mongoose";
 import { usuarioDto } from "../dao/DTO/dto.js";
 import { Strategy as JwtStrategy, ExtractJwt } from "passport-jwt";
 
+const jwtOptions = {
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  secretOrKey: SECRETKEY,
+};
+
 export const inicializarPassport = () => {
   passport.use(
     "registro",
@@ -120,19 +125,11 @@ export const inicializarPassport = () => {
   );
 
   passport.use(
-    new JwtStrategy(
-      {
-        jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-        secretOrKey: SECRETKEY,
-      },
-      (jwtPayload, done) => {
-        const userDTO = new usuarioDto(...Object.values(jwtPayload));
-
-        return done(null, userDTO);
-      }
-    )
+    new JwtStrategy(jwtOptions, (jwtPayload, done) => {
+      const userDTO = new usuarioDto(...Object.values(jwtPayload));
+      return done(null, userDTO);
+    })
   );
-
   //configurar el serializador y deserializador
 
   passport.serializeUser((usuario, done) => {

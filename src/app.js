@@ -12,9 +12,7 @@ import { router as viewsRouter } from "./router/vistasRouter.js";
 import { router as sessionsRouter } from "./router/sessions.router.js";
 import { inicializarPassport } from "./config/config.passport.js";
 import passport from "passport";
-
 import passportJWT from "jsonwebtoken";
-import { SECRETKEY } from "./utils.js";
 
 const ExtractJwt = passportJWT.ExtractJwt;
 const JwtStrategy = passportJWT.Strategy;
@@ -48,11 +46,6 @@ app.use(express.urlencoded({ extended: true }));
 inicializarPassport();
 app.use(passport.initialize());
 app.use(passport.session());
-
-const jwtOptions = {
-  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-  secretOrKey: SECRETKEY,
-};
 
 app.use(express.static(path.join(__dirname, "/public")));
 
