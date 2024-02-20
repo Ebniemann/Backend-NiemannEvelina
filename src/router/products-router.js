@@ -20,13 +20,14 @@ const productRouter = (io) => {
     ProductController.deleteProduct
   );
 
-  router.get("/mockingsproducts", (req, res) => {
+  router.get("/mockingsproducts/cantidad", (req, res) => {
     let { cantidad } = req.query;
+    cantidad = parseInt(cantidad);
     if (!cantidad || cantidad === 0) {
       res.setHeader("Content-Type", "application/json");
       return res.status(400).json({ eror: "Ingrese cantidad !" });
     }
-    let productos = generaProducto();
+    let productos = generaProducto(cantidad);
 
     res.setHeader("Content-Type", "application/json");
     return res.status(200).json({ payload: productos });
