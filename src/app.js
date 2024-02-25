@@ -13,6 +13,7 @@ import { router as sessionsRouter } from "./router/sessions.router.js";
 import { inicializarPassport } from "./config/config.passport.js";
 import passport from "passport";
 import passportJWT from "jsonwebtoken";
+import { errorHandler } from "./middleware/errorHandler.js";
 
 const ExtractJwt = passportJWT.ExtractJwt;
 const JwtStrategy = passportJWT.Strategy;
@@ -68,6 +69,7 @@ app.use("/", viewsRouter);
 // app.use("/chat", viewsRouter);
 // app.use("/cart", viewsRouter);
 // app.use("/realtimeproducts", viewsRouter);
+app.use(errorHandler);
 
 try {
   await mongoose.connect(

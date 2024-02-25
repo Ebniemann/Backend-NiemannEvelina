@@ -2,8 +2,10 @@ import { CartDao } from "../dao/cart.MemoryDao.js";
 import { productsModels } from "../dao/models/products.models.js";
 import { ProductService } from "./products.service.js";
 import { ProductDao } from "../dao/products.MemoryDao.js";
-
 import { TicketService } from "./ticket.service.js";
+import { CustomErrors } from "../Errors/CustomErrors.js";
+import { STATUS_CODE } from "../errors/tiposError.js";
+import { errorArgumentoCart } from "../errors/erroresCart.js";
 
 export class CartService {
   static async getCart() {
@@ -11,7 +13,10 @@ export class CartService {
       const carts = await CartDao.getCart();
       return carts;
     } catch (error) {
-      throw new Error(`Error en el servicio: ${error.message}`);
+      res.setHeader("Content-Type", "application/json");
+      return res
+        .status(500)
+        .json({ error: "Error inesperado del lado del servidor" });
     }
   }
   static async getCartById(cid) {
@@ -19,7 +24,10 @@ export class CartService {
       const cartId = await CartDao.findCartById(cid);
       return cartId;
     } catch (error) {
-      throw new Error(`Error en el servicio: ${error.message}`);
+      res.setHeader("Content-Type", "application/json");
+      return res
+        .status(500)
+        .json({ error: "Error inesperado del lado del servidor" });
     }
   }
 
@@ -49,7 +57,12 @@ export class CartService {
       const cart = await CartDao.findCartById(cid);
 
       if (!cart) {
-        return res.status(404).json({ message: "Carrito no encontrado" });
+        // return res.status(404).json({ message: "Carrito no encontrado" });
+        throw CustomErrors.CustomErrors(
+          "No se encontro un carrito con ese ID",
+          STATUS_CODE.NOT_FOUND,
+          errorArgumentoCart(cid)
+        );
       }
 
       const productToUpdate = cart.carrito.find((p) => p.producto.equals(pid));
@@ -76,7 +89,12 @@ export class CartService {
       const cart = await CartDao.findCartById(cid);
 
       if (!cart) {
-        throw error("No se encontro el carrito con ese Id");
+        // throw error("No se encontro el carrito con ese Id");
+        throw CustomErrors.CustomErrors(
+          "No se encontro un carrito con ese ID",
+          STATUS_CODE.NOT_FOUND,
+          errorArgumentoCart(cid)
+        );
       }
 
       const updateQuery = { $pull: { productos: { _id: pid } } };
@@ -86,7 +104,11 @@ export class CartService {
       if (result.nModified > 0) {
         return "Eliminación exitosa";
       } else {
-        throw new Error("No se pudo eliminar el producto");
+        // throw new Error("No se pudo eliminar el producto");
+        throw CustomErrors.CustomErrors(
+          "No se pudo eliminar el producto del carrito",
+          STATUS_CODE.ERROR_SERVIDOR
+        );
       }
     } catch (error) {
       throw error;
@@ -97,7 +119,12 @@ export class CartService {
     try {
       const cart = await CartDao.findCartById(cid);
       if (!cart) {
-        throw error("No se encontro un carrito con ese Id");
+        // throw error("No se encontro un carrito con ese Id");
+        throw CustomErrors.CustomErrors(
+          "No se encontro un carrito con ese ID",
+          STATUS_CODE.NOT_FOUND,
+          errorArgumentoCart(cid)
+        );
       }
 
       const updateQuery = { $set: { carrito: [] } };
@@ -130,7 +157,12 @@ export class CartService {
       const cart = await CartDao.findCartById(cid);
 
       if (!cart) {
-        throw new Error("Carrito no encontrado");
+        // throw new Error("Carrito no encontrado");
+        throw CustomErrors.CustomErrors(
+          "Carrito no encontrado",
+          STATUS_CODE.NOT_FOUND,
+          errorArgumentoCart(cid)
+        );
       }
 
       const productosCompra = cart.carrito;
@@ -178,8 +210,10 @@ export class CartService {
         fallaProductos,
       };
     } catch (error) {
-      console.error(error.message);
-      throw new Error("Error inesperado del lado del servidor");
+      res.setHeader("Content-Type", "application/json");
+      return res
+        .status(500)
+        .json({ error: "Error inesperado del lado del servidor" });
     }
   }
 }
