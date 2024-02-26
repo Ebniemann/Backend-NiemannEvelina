@@ -70,10 +70,12 @@ export class ProductController {
     } = req.body;
 
     if (!title || !price) {
-      res.setHeader("content-type", "application/json");
-      return res.status(400).json({
-        error: "Titulo y precio son datos obligatorios ",
-      });
+      // req.logger.warn("Falta completar titulo o precio");
+      req.logger.log("error", "Falta completar titulo o precio");
+      throw CustomErrors.CustomErrors(
+        "Titulo y precio son datos obligatorios",
+        STATUS_CODE.NOT_FOUND
+      );
     }
 
     try {
@@ -91,10 +93,10 @@ export class ProductController {
       res.setHeader("content-type", "application/json");
       return res.status(200).json({ payload: newProduct });
     } catch (error) {
-      res.setHeader("content-type", "application/json");
-      return res
-        .status(400)
-        .json({ error: "no se puede utilizar el mismo código" });
+      throw CustomErrors.CustomErrors(
+        "Ese código ya esta en uso",
+        STATUS_CODE.NOT_FOUND
+      );
     }
   }
 
@@ -102,8 +104,11 @@ export class ProductController {
     let { id } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      res.setHeader("Content-type", "application/json");
-      return res.status(400).json({ error: "Ingrese un id válido." });
+      throw CustomErrors.CustomErrors(
+        "No se encontro un producto con ese ID",
+        STATUS_CODE.NOT_FOUND,
+        errorArgumentoProductos(id)
+      );
     }
 
     const updatedData = req.body;
@@ -122,8 +127,11 @@ export class ProductController {
     let { id } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      res.setHeader("Content-type", "application/json");
-      return res.status(400).json({ error: "Ingrese un id válido." });
+      throw CustomErrors.CustomErrors(
+        "No se encontro un producto con ese ID",
+        STATUS_CODE.NOT_FOUND,
+        errorArgumentoProductos(id)
+      );
     }
 
     try {

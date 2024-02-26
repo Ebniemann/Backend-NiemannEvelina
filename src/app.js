@@ -1,4 +1,5 @@
 import __dirname from "./utils.js";
+import { loggerMiddleware } from "./utils.js";
 import path from "path";
 import express from "express";
 import { engine } from "express-handlebars";
@@ -14,11 +15,12 @@ import { inicializarPassport } from "./config/config.passport.js";
 import passport from "passport";
 import passportJWT from "jsonwebtoken";
 import { errorHandler } from "./middleware/errorHandler.js";
+import { config } from "./config/config.js";
 
 const ExtractJwt = passportJWT.ExtractJwt;
 const JwtStrategy = passportJWT.Strategy;
 
-const PORT = 8080;
+const PORT = config.PORT;
 
 const app = express();
 
@@ -57,11 +59,20 @@ const server = app.listen(PORT, () => {
 const io = socketIo(server);
 
 const routerProduct = productRouter(io);
-
+app.use(loggerMiddleware);
 app.use("/api/products", productRouter(io));
 app.use("/api/sessions", sessionsRouter);
 app.use("/api/cart", cartRouter);
 app.use("/", viewsRouter);
+
+app.get("/loggerTest", (req, res) => {
+  req.logger.info("Este es un mensaje de info");
+  req.logger.warn("Este es un mensaje de advertencia");
+  req.logger.error("Este es un mensaje de error");
+
+  res.send("Prueba de logs completa en las vistas");
+});
+
 // app.use("/cart/:cid", viewsRouter);
 // app.use("/registro", viewsRouter);
 // app.use("/login", viewsRouter);
