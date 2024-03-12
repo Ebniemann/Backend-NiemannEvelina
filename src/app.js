@@ -11,7 +11,9 @@ import productRouter from "./router/products-router.js";
 import { router as cartRouter } from "./router/cart.router.js";
 import { router as viewsRouter } from "./router/vistasRouter.js";
 import { router as sessionsRouter } from "./router/sessions.router.js";
+import { router as userRouter } from "./router/user.router.js";
 import { inicializarPassport } from "./config/config.passport.js";
+
 import passport from "passport";
 import passportJWT from "jsonwebtoken";
 import { errorHandler } from "./middleware/errorHandler.js";
@@ -20,7 +22,7 @@ import { config } from "./config/config.js";
 const ExtractJwt = passportJWT.ExtractJwt;
 const JwtStrategy = passportJWT.Strategy;
 
-const PORT = config.PORT;
+const PORT = 8080;
 
 const app = express();
 
@@ -60,10 +62,21 @@ const io = socketIo(server);
 
 const routerProduct = productRouter(io);
 app.use(loggerMiddleware);
+app.use((req, res, next) => {
+  console.log("Solicitud a la ruta:", req.path);
+  next();
+});
 app.use("/api/products", productRouter(io));
-app.use("/api/sessions", sessionsRouter);
 app.use("/api/cart", cartRouter);
+app.use("/api/usuarios", userRouter);
+app.use("/api/sessions", sessionsRouter);
 app.use("/", viewsRouter);
+
+app._router.stack.forEach((route) => {
+  if (route.route && route.route.path) {
+    console.log(`Registered route: ${route.route.path}`);
+  }
+});
 
 app.get("/loggerTest", (req, res) => {
   req.logger.info("Este es un mensaje de info");

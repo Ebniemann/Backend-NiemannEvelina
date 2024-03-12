@@ -7,3 +7,13 @@ App ID: 747737
 Client ID: Iv1.6f990808a1b6ca2a
 
 clave secreta de github tp; d6ef99542d9947486266428466645de99bd33f482
+
+contraseña de aplicaciones hxqj ohkq pemz jvon
+
+
+//ethereal Account credentials
+Account details generated using Faker.js
+
+Name	Laurianne Spinka
+Username	laurianne.spinka4@ethereal.email
+Password	nAdHzwf2fGwcs9P4tt

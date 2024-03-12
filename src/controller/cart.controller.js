@@ -2,6 +2,7 @@ import { cartModel } from "../dao/models/carts.models.js";
 import { productsModels } from "../dao/models/products.models.js";
 import mongoose from "mongoose";
 import { CartService } from "../Services/cart.service.js";
+import { ProductService } from "../Services/products.service.js";
 
 export class CartController {
   static async getCart(req, res) {
@@ -20,8 +21,21 @@ export class CartController {
 
     try {
       const productIds = products.map(
-        (productId) => new mongoose.Types.ObjectId(productId)
+        (pid) => new mongoose.Types.ObjectId(pid)
       );
+      const usuario = await usuarioModels.findById(req.usuario._id);
+      if (usuario.rol === "premium") {
+        const ownedProducts = await ProductService.getOwnedProducts(
+          usuario._id,
+          productIds
+        );
+        if (ownedProducts.length > 0) {
+          return res.status(403).json({
+            error:
+              "Un usuario premium no puede agregar sus propios productos al carrito.",
+          });
+        }
+      }
 
       const newCart = await CartService.createCart(name, productIds);
 

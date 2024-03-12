@@ -85,4 +85,21 @@ export class ProductService {
         .json({ error: "Error inesperado del lado del servidor" });
     }
   }
+
+  static async getOwnedProducts(userId, pid) {
+    try {
+      const currentUser = await usuarioModels.findById(userId);
+
+      const ownedProducts = await ProductDao.getProducts({
+        _id: { $in: pid },
+        owner: currentUser.email,
+      });
+
+      return ownedProducts;
+    } catch (error) {
+      throw new Error(
+        `Error al obtener productos propiedad del usuario: ${error.message}`
+      );
+    }
+  }
 }

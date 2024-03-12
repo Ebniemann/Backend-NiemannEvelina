@@ -11,6 +11,7 @@ const productEsquema = new mongoose.Schema(
     stock: Number,
     category: String,
     thumbnails: String,
+    owner: { type: mongoose.Schema.Types.ObjectId, ref: "usuarios" },
   },
   { timestamps: true }
 );

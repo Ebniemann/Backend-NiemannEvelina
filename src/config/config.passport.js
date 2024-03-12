@@ -48,6 +48,7 @@ export const inicializarPassport = () => {
             email,
             cart: nuevoCarrito._id,
             password: hashedPassword,
+            rol: req.body.rol,
           });
 
           return done(null, usuario);
@@ -64,6 +65,7 @@ export const inicializarPassport = () => {
     new local.Strategy(
       {
         usernameField: "email",
+        session: false,
       },
       async (username, password, done) => {
         try {
@@ -72,9 +74,7 @@ export const inicializarPassport = () => {
             return done(null, false);
           }
 
-          const usuario = await usuarioModels
-            .findOne({ email: username })
-            .lean();
+          const usuario = await usuarioModels.findOne({ email: username });
 
           if (!usuario) {
             return done(null, false, { message: "Credenciales incorrectas" });
@@ -84,8 +84,16 @@ export const inicializarPassport = () => {
             return done(null, false, { message: "Credenciales incorrectas" });
           }
 
+          const usuarioInfo = {
+            _id: usuario._id,
+            email: usuario.email,
+            roles: usuario.rol,
+          };
+
+          console.log("eveeeeeee login", usuarioInfo);
+
           delete usuario.password;
-          return done(null, usuario);
+          return done(null, usuarioInfo);
         } catch (error) {
           return done(error, "error en el login");
         }

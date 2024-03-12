@@ -36,7 +36,7 @@ export class ProductController {
       });
     } catch (error) {
       console.log(error.message);
-      res.status(500).json({ error: "Error inesperado del lado del servidor" });
+      res.status(500).json("error", { error: "Error al obtener productos" });
     }
   }
 
@@ -88,6 +88,7 @@ export class ProductController {
         stock,
         category,
         thumbnails,
+        owner: req.usuario._id,
       });
       io.emit("nuevoProducto", { nuevoProducto: newProduct });
       res.setHeader("content-type", "application/json");

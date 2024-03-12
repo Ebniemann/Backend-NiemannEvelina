@@ -20,22 +20,22 @@ router.get("/", (req, res) => {
   res.status(200).render("home");
 });
 
-// router.get("/producto", auth, async (req, res) => {
-//   try {
-//     let usuario = req.session.usuario;
-//     const products = await productManager.listarProductos();
+router.get("/producto", auth, async (req, res) => {
+  try {
+    let usuario = req.session.usuario;
+    const products = await productManager.listarProductos();
 
-//     res.status(200).render("producto", {
-//       usuario,
-//       products,
-//       titulo: "Productos",
-//       estilos: "stylesHome",
-//     });
-//   } catch (error) {
-//     console.error("Error al obtener productos:", error);
-//     res.status(500).render("error al obtener el producto");
-//   }
-// });
+    res.status(200).render("producto", {
+      usuario,
+      products,
+      titulo: "Productos",
+      estilos: "stylesHome",
+    });
+  } catch (error) {
+    console.error("Error al obtener productos:", error);
+    res.status(500).render("error", { message: "Error al obtener productos" });
+  }
+});
 
 router.get("/chat", auth, async (req, res) => {
   try {
@@ -103,6 +103,11 @@ router.get("/perfil", auth, async (req, res) => {
     console.error("Error al obtener el perfil del usuario:", error);
     res.status(500).render("error al obtener el perfil del usuario");
   }
+});
+
+router.get("/recuperoclave", (req, res) => {
+  console.log("Se ha alcanzado la ruta /recuperoclave");
+  res.render("recuperoclave");
 });
 
 //Vista del Socket Io
