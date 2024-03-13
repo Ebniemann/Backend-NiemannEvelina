@@ -104,8 +104,7 @@ export class CartController {
       console.error(error.message);
       res.setHeader("Content-Type", "application/json");
       return res.status(500).json({
-        error:
-          "Error en el servidor al intentar eliminar los productos del carrito",
+        error: "Error del lado del servidor",
       });
     }
   }

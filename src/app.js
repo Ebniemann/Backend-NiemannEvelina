@@ -17,7 +17,9 @@ import { inicializarPassport } from "./config/config.passport.js";
 import passport from "passport";
 import passportJWT from "jsonwebtoken";
 import { errorHandler } from "./middleware/errorHandler.js";
-import { config } from "./config/config.js";
+
+import swaggerJsdoc from "swagger-jsdoc";
+import swaggerUi from "swagger-ui-express";
 
 const ExtractJwt = passportJWT.ExtractJwt;
 const JwtStrategy = passportJWT.Strategy;
@@ -25,6 +27,22 @@ const JwtStrategy = passportJWT.Strategy;
 const PORT = 8080;
 
 const app = express();
+
+const options = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "API E-commerce",
+      version: "1.0.0",
+      description: "Documento API eve",
+    },
+  },
+  apis: ["./src/docs/*.yaml"],
+};
+
+const specs = swaggerJsdoc(options);
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 
 app.use(
   sessions({
