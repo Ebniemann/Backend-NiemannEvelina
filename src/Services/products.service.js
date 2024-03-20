@@ -19,7 +19,7 @@ export class ProductService {
     try {
       const product = await ProductDao.findProductById(id);
       if (!product) {
-        throw CustomErrors.CustomErrors(
+        throw new CustomErrors.CustomErrors(
           "No se encontro un producto con ese ID",
           STATUS_CODE.NOT_FOUND,
           errorArgumentoProductos(id)
@@ -38,9 +38,10 @@ export class ProductService {
     try {
       return await ProductDao.createProduct(productData);
     } catch (error) {
-      throw CustomErrors.CustomErrors(
+      throw new CustomErrors.CustomErrors(
         "No se pudo crear el producto",
-        STATUS_CODE.ERROR_BAD_REQUEST
+        STATUS_CODE.ERROR_BAD_REQUEST,
+        error
       );
     }
   }
@@ -49,7 +50,7 @@ export class ProductService {
     try {
       return await ProductDao.updateProduct(id, updatedData);
     } catch (error) {
-      throw CustomErrors.CustomErrors(
+      throw new CustomErrors.CustomErrors(
         "No se pudo actualizar el producto",
         STATUS_CODE.ERROR_BAD_REQUEST,
         errorArgumentoProductos(id)
@@ -61,7 +62,7 @@ export class ProductService {
     try {
       const existingProduct = await ProductDao.findProductById(id);
       if (!existingProduct) {
-        throw CustomErrors.CustomErrors(
+        throw new CustomErrors.CustomErrors(
           "No se encontro un producto con ese ID",
           STATUS_CODE.NOT_FOUND,
           errorArgumentoProductos(id)
@@ -72,7 +73,7 @@ export class ProductService {
         res.setHeader("Content-Type", "application/json");
         return res.status(200).json({ payload: "Eliminación exitosa" });
       } else {
-        throw CustomErrors.CustomErrors(
+        throw new CustomErrors.CustomErrors(
           "No se pudo eliminar el producto",
           STATUS_CODE.ERROR_BAD_REQUEST,
           errorArgumentoProductos(id)

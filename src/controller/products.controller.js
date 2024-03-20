@@ -94,10 +94,8 @@ export class ProductController {
       res.setHeader("content-type", "application/json");
       return res.status(200).json({ payload: newProduct });
     } catch (error) {
-      throw CustomErrors.CustomErrors(
-        "Ese código ya esta en uso",
-        STATUS_CODE.NOT_FOUND
-      );
+      res.setHeader("content-type", "application/json");
+      return res.status(500).json({ error: error.message });
     }
   }
 
