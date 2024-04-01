@@ -110,29 +110,9 @@ router.get("/recuperoclave", (req, res) => {
   res.render("recuperoclave");
 });
 
-//Vista del Socket Io
-// router.get("/realtimeproducts", async (req, res) => {
-//   try {
-//     const products = await productManager.listarProductos();
-//     res.status(200).render("realtimeproducts", { products });
-//   } catch (error) {
-//     console.error("Error al obtener los productos", error);
-//     res
-//       .status(500)
-//       .render("error", { errorMessage: "Error al obtener los productos" });
-//   }
-// });
+router.get("/documents", (req, res) => {
+  let { error, message } = req.query;
 
-// router.get("/cart", async (req, res) => {
-//   try {
-//     const carts = await cartManager.listarCarritos();
-//     res.status(200).render("cart", {
-//       carts,
-//       name: "Carrito de compras",
-//       estilos: "stylesHome",
-//     });
-//   } catch (error) {
-//     console.error("error", error);
-//     res.status(500).render("error al obtener carrito de compras");
-//   }
-// });
+  res.setHeader("Content-Type", "text/html");
+  res.status(200).render("documents", { error, message });
+});

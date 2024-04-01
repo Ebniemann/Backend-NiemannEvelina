@@ -35,9 +35,10 @@ router.post(
   passport.authenticate("login", {
     failureRedirect: "/api/sessions/errorLogin",
   }),
+
   async (req, res) => {
     try {
-      console.log("Datos de usuario:", req.user);
+      console.log("Datos de usuario login:", req.user);
 
       if (req.isAuthenticated()) {
         req.session.usuario = {
@@ -49,6 +50,9 @@ router.post(
           cart: req.user.cart,
         };
       }
+      console.log(req.session);
+
+      req.session.userId = req.user._id;
 
       const token = jwt.sign(
         { email: req.user.email, rol: req.user.rol },
@@ -58,8 +62,8 @@ router.post(
         }
       );
 
-      res.json({ token: token });
-      // res.redirect("/perfil");
+      // res.json({ token: token });
+      res.redirect("/perfil");
     } catch (error) {
       console.error("Error en el proceso de inicio de sesión:", error);
       res.redirect(

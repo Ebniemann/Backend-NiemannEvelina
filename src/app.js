@@ -86,7 +86,7 @@ app.use((req, res, next) => {
 });
 app.use("/api/products", productRouter(io));
 app.use("/api/cart", cartRouter);
-app.use("/api/usuarios", userRouter);
+app.use("/api/user", userRouter);
 app.use("/api/sessions", sessionsRouter);
 app.use("/", viewsRouter);
 
@@ -104,13 +104,6 @@ app.get("/loggerTest", (req, res) => {
   res.send("Prueba de logs completa en las vistas");
 });
 
-// app.use("/cart/:cid", viewsRouter);
-// app.use("/registro", viewsRouter);
-// app.use("/login", viewsRouter);
-// app.use("/producto", viewsRouter);
-// app.use("/chat", viewsRouter);
-// app.use("/cart", viewsRouter);
-// app.use("/realtimeproducts", viewsRouter);
 app.use(errorHandler);
 
 try {

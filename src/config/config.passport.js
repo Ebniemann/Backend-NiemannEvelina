@@ -87,10 +87,11 @@ export const inicializarPassport = () => {
           const usuarioInfo = {
             _id: usuario._id,
             email: usuario.email,
-            roles: usuario.rol,
+            nombre: usuario.nombre,
+            apellido: usuario.apellido,
+            edad: usuario.edad,
+            rol: usuario.rol,
           };
-
-          console.log("eveeeeeee login", usuarioInfo);
 
           delete usuario.password;
           return done(null, usuarioInfo);

@@ -24,4 +24,13 @@ export class UserService {
       );
     }
   }
+
+  static async saveUser(user) {
+    try {
+      const savedUser = await user.save();
+      return savedUser;
+    } catch (error) {
+      throw new Error(`Error al guardar el usuario: ${error.message}`);
+    }
+  }
 }
