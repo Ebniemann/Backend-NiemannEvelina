@@ -9,24 +9,25 @@ export class UserController {
       if (!user) {
         return res.status(404).json({ error: "Usuario no encontrado" });
       }
-
-      // Verificar si el usuario tiene 3 archivos cargados
-      if (user.documentos.length >= 3) {
-        // Si tiene 3 archivos cargados, actualizar el rol a premium
-        const updatedUser = await UserService.updateUserRole(uid, "premium");
-        return res
-          .status(200)
-          .json({
+      if (user.rol === "premium") {
+        const updatedUser = await UserService.updateUserRole(uid, "usuario");
+        return res.status(200).json({
+          message: "Usuario actualizado a usuario",
+          user: updatedUser,
+        });
+      } else {
+        if (user.documentos.length >= 3) {
+          const updatedUser = await UserService.updateUserRole(uid, "premium");
+          return res.status(200).json({
             message: "Usuario actualizado a premium",
             user: updatedUser,
           });
-      } else {
-        return res
-          .status(400)
-          .json({
+        } else {
+          return res.status(400).json({
             error:
               "El usuario no tiene suficientes archivos cargados para actualizar a premium",
           });
+        }
       }
     } catch (error) {
       return res.status(500).json({ error: "Error interno del servidor" });
