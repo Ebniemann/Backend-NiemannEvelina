@@ -6,11 +6,7 @@ import { upload } from "../middleware/multer.js";
 
 export const router = Router();
 
-router.put(
-  "/premium/:uid",
-  autorizacion(["admin"]),
-  UserController.togglePremiumRole
-);
+router.put("/premium/:uid", UserController.togglePremiumRole);
 
 router.post(
   "/:uid/documents",

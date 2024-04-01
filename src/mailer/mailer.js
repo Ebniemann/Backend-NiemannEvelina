@@ -35,6 +35,6 @@ const enviarEmail = (to, subject, message) => {
   });
 };
 
-// enviarEmail()
-//   .then((res) => console.log(res))
-//   .catch((err) => console.log(err.message));
+enviarEmail()
+  .then((res) => console.log(res))
+  .catch((err) => console.log(err.message));

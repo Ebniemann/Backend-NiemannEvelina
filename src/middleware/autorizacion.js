@@ -1,6 +1,5 @@
 export const autorizacion = (rol) => {
   return (req, res, next) => {
-    console.log("Roles del usuario:", req.user.rol);
     const userRol = req.user && req.user.rol;
 
     if (userRol === rol) {
