@@ -1,6 +1,5 @@
 import multer from "multer";
 
-// Configuración de almacenamiento para cada tipo de archivo
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     let destFolder = "";
@@ -27,5 +26,4 @@ const storage = multer.diskStorage({
   },
 });
 
-// Inicializar Multer con la configuración de almacenamiento
 export const upload = multer({ storage: storage });

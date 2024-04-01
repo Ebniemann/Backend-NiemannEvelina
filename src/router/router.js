@@ -13,7 +13,6 @@ export class MiRouter {
   }
 
   get(ruta, permisos, ...funciones) {
-    // ... son aquí el operador rest, que alamacena los argumentos que lleguen en un array llamado funciones
     this.router.get(
       ruta,
       this.misRespuestas,
@@ -24,7 +23,6 @@ export class MiRouter {
   }
 
   post(ruta, permisos, ...funciones) {
-    // ... son aquí el operador rest, que alamacena los argumentos que lleguen en un array llamado funciones
     this.router.post(
       ruta,
       this.misRespuestas,
@@ -77,8 +75,6 @@ export class MiRouter {
         return next();
       }
 
-      // verificar que existe usuario logueado, que tenga un rol
-      // y que el rol de ese usuario logueado, este incluído en los permisos
       if (!req.user || !req.user.rol) {
         return res.errorAuth("No hay usuarios logueados");
       }

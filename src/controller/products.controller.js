@@ -70,7 +70,6 @@ export class ProductController {
     } = req.body;
 
     if (!title || !price) {
-      // req.logger.warn("Falta completar titulo o precio");
       req.logger.log("error", "Falta completar titulo o precio");
       throw CustomErrors.CustomErrors(
         "Titulo y precio son datos obligatorios",

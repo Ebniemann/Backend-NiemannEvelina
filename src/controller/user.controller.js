@@ -24,20 +24,16 @@ export class UserController {
     const uid = req.session.userId;
     console.log("Valor de req.session.userId:", req.session.userId);
     try {
-      // Obtener usuario por ID utilizando UserService
       const user = await UserService.findUserById(uid);
       if (!user) {
         return res.status(404).json({ message: "Usuario no encontrado" });
       }
 
-      // Modificar el usuario utilizando métodos de UserService
-      // Asignar los archivos cargados a la propiedad 'documentos' del usuario
       user.documentos = Object.keys(req.files).map((fieldname) => ({
         name: req.files[fieldname][0].originalname,
         reference: req.files[fieldname][0].filename,
       }));
 
-      // Guardar los cambios en la base de datos utilizando UserService
       await UserService.saveUser(user);
 
       return res
