@@ -1,22 +1,35 @@
 import { UserService } from "../Services/user.service.js";
 
 export class UserController {
-  static async togglePremiumRole(req, res) {
+  static async togglePremiumIfHasDocuments(req, res) {
     const { uid } = req.params;
+
     try {
       const user = await UserService.findUserById(uid);
       if (!user) {
         return res.status(404).json({ error: "Usuario no encontrado" });
       }
 
-      const newRole = user.rol === "premium" ? "usuario" : "premium";
-      const updatedUser = await UserService.updateUserRole(uid, newRole);
-
-      res
-        .status(200)
-        .json({ message: "Rol de usuario actualizado", user: updatedUser });
+      // Verificar si el usuario tiene 3 archivos cargados
+      if (user.documentos.length >= 3) {
+        // Si tiene 3 archivos cargados, actualizar el rol a premium
+        const updatedUser = await UserService.updateUserRole(uid, "premium");
+        return res
+          .status(200)
+          .json({
+            message: "Usuario actualizado a premium",
+            user: updatedUser,
+          });
+      } else {
+        return res
+          .status(400)
+          .json({
+            error:
+              "El usuario no tiene suficientes archivos cargados para actualizar a premium",
+          });
+      }
     } catch (error) {
-      res.status(500).json({ error: "Error al cambiar el rol del usuario" });
+      return res.status(500).json({ error: "Error interno del servidor" });
     }
   }
 
