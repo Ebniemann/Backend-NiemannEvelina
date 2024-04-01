@@ -32,9 +32,9 @@ export class UserController {
 
       // Modificar el usuario utilizando métodos de UserService
       // Asignar los archivos cargados a la propiedad 'documentos' del usuario
-      user.documentos = req.files.map((file) => ({
-        name: file.originalname,
-        reference: file.filename, // O cualquier referencia que desees guardar
+      user.documentos = Object.keys(req.files).map((fieldname) => ({
+        name: req.files[fieldname][0].originalname,
+        reference: req.files[fieldname][0].filename,
       }));
 
       // Guardar los cambios en la base de datos utilizando UserService

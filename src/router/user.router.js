@@ -14,6 +14,10 @@ router.put(
 
 router.post(
   "/:uid/documents",
-  upload.array("profileDocument"),
+  upload.fields([
+    { name: "profilePhoto" },
+    { name: "profileProduct" },
+    { name: "profileDocument" },
+  ]),
   UserController.updateUserDocumentStatus
 );

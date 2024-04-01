@@ -1,8 +1,23 @@
 import multer from "multer";
 
+// Configuración de almacenamiento para cada tipo de archivo
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "./uploads");
+    let destFolder = "";
+    switch (file.fieldname) {
+      case "profilePhoto":
+        destFolder = "./uploads/photos";
+        break;
+      case "profileProduct":
+        destFolder = "./uploads/products";
+        break;
+      case "profileDocument":
+        destFolder = "./uploads/documents";
+        break;
+      default:
+        destFolder = "./uploads";
+    }
+    cb(null, destFolder);
   },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
@@ -12,4 +27,5 @@ const storage = multer.diskStorage({
   },
 });
 
+// Inicializar Multer con la configuración de almacenamiento
 export const upload = multer({ storage: storage });
