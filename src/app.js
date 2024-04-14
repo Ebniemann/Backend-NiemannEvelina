@@ -86,6 +86,7 @@ app.use(errorHandler);
 
 // Server Initialization
 const server = app.listen(PORT, () => {
+  console.log(`Current environment: ${process.env.MODE}`);
   console.log(`Server running on PORT: ${PORT}`);
 });
 

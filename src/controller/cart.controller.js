@@ -7,8 +7,9 @@ import { ProductService } from "../services/products.service.js";
 export class CartController {
   static async getCart(req, res) {
     try {
-      const carts = await CartService.getCart();
-      res.status(200).json({ carts });
+      const cart = await CartService.getCart();
+      console.log(cart)
+      res.status(200).json(cart);
     } catch (error) {
       res.status(500).json({
         error: "Error inesperado del lado del servidor",

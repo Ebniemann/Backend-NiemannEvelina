@@ -2,24 +2,18 @@
 <br>
 <h2>CARRITOS DE COMPRAS</h2>
 <hr>
-<ul>
-  {{#if carts}}
-    <li>
-      <p><strong>Carrito de:</strong> {{carts.name}}</p>
-      <ul>
-        {{#each carts.carrito}}
-          <li>
-            <p><strong>Producto:</strong> {{producto.title}}</p>
-            <p><strong>Precio:</strong> ${{producto.price}}</p>
-          </li>
-        {{/each}}
-      </ul>
-    </li>
-  {{else}}
-    <li>
+{{#if cart}}
+  {{#each cart.carrito}}
+    <p><strong>Producto:</strong> {{this.producto.title}}</p>
+    <p><strong>Precio:</strong> ${{this.producto.price}}</p>
+    <p><strong>Cantidad:</strong> {{this.quantity}}</p>
+    <p><strong>Subtotal:</strong> ${{this.producto.price * this.quantity}}</p>
+    <br>
+  {{/each}}
+{{else}}
       <p>{{message}}</p>
-    </li>
-  {{/if}}
+
+{{/if}}
 </ul>
 <br>
 <br>

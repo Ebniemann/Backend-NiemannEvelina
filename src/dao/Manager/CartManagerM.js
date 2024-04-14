@@ -12,10 +12,12 @@ export class ManagerCart {
 
   async obtenerCarritoPorId(cartId) {
     try {
-      return await cartModel
+      const carrito = await cartModel
         .findById(cartId)
         .populate("carrito.producto")
         .lean();
+      console.log(carrito)
+      return carrito
     } catch (error) {
       console.log("No se encuentran los productos", error);
       return null;

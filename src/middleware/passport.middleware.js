@@ -20,7 +20,6 @@ const signupStrategy = new local.Strategy(
     usernameField: "email",
   },
   async (req, email, password, done) => {
-    console.log('signup strategy', { req, email, password });
     try {
       const { nombre, apellido, edad } = req.body;
 
@@ -36,10 +35,7 @@ const signupStrategy = new local.Strategy(
       }
 
       const nuevoCarrito = await cartModel.create({});
-      console.log("Nuevo carrito creado:", nuevoCarrito);
-
       const hashedPassword = creaHash(password);
-
       const usuario = await usuarioModels.create({
         nombre,
         apellido,
@@ -65,15 +61,12 @@ const loginStrategy = new local.Strategy(
     session: false,
   },
   async (email, password, done) => {
-    console.error("login strategy:", { email, password, done });
     try {
       if (!email || !password) {
         return done(null, false, { message: "Por favor, ingrese email y/o contraseña" });
       }
 
       let usuario = await usuarioModels.findOne({ email });
-
-      console.log(usuario)
 
       if (!usuario || !validaPassword(usuario.password, password)) {
         return done(null, false, { message: "Credenciales incorrectas" });
@@ -112,7 +105,6 @@ const githubStrategy = new github.Strategy(
     if (profile._json.email === null) {
       return done(null, false, { message: "La cuenta de GitHub no posee un email configurado." });
     }
-
     try {
       let user = await usuarioModels.findOne({ email: profile._json.email });
 
