@@ -12,7 +12,8 @@ export default __dirname;
 
 export const SECRETKEY = "Eve123";
 
-export const PASS_GMAIL = "hxqj ohkq pemz jvon";
+export const PASS_GMAIL = "hxqjohkqpemzjvon";
+export const GMAIL = "evelinaniemann@gmail.com";
 
 export const generaToken = (usuario) => {
   const payload = {

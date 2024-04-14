@@ -13,13 +13,12 @@ import { router as viewsRouter } from "./router/vistasRouter.js";
 import { router as sessionsRouter } from "./router/sessions.router.js";
 import { router as userRouter } from "./router/user.router.js";
 import { inicializarPassport } from "./config/config.passport.js";
-
 import passport from "passport";
 import passportJWT from "jsonwebtoken";
 import { errorHandler } from "./middleware/errorHandler.js";
-
 import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
+import { SECRETKEY } from "./utils.js";
 
 const ExtractJwt = passportJWT.ExtractJwt;
 const JwtStrategy = passportJWT.Strategy;
@@ -37,7 +36,7 @@ const options = {
       description: "Documento API eve",
     },
   },
-  apis: ["./src/docs/*.yaml"],
+  apis: [`${__dirname}/docs/*.yaml`],
 };
 
 const specs = swaggerJsdoc(options);
@@ -46,7 +45,7 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 
 app.use(
   sessions({
-    secret: "coder123",
+    secret: SECRETKEY,
     resave: true,
     saveUninitialized: true,
     store: mongoStore.create({
@@ -65,12 +64,11 @@ app.set("views", path.join(__dirname, "/views"));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, "/public")));
 
 inicializarPassport();
 app.use(passport.initialize());
 app.use(passport.session());
-
-app.use(express.static(path.join(__dirname, "/public")));
 
 const server = app.listen(PORT, () => {
   console.log("hola");
@@ -78,7 +76,6 @@ const server = app.listen(PORT, () => {
 
 const io = socketIo(server);
 
-const routerProduct = productRouter(io);
 app.use(loggerMiddleware);
 app.use((req, res, next) => {
   console.log("Solicitud a la ruta:", req.path);
@@ -89,6 +86,7 @@ app.use("/api/cart", cartRouter);
 app.use("/api/user", userRouter);
 app.use("/api/sessions", sessionsRouter);
 app.use("/", viewsRouter);
+app.use(errorHandler);
 
 app._router.stack.forEach((route) => {
   if (route.route && route.route.path) {
@@ -103,8 +101,6 @@ app.get("/loggerTest", (req, res) => {
 
   res.send("Prueba de logs completa en las vistas");
 });
-
-app.use(errorHandler);
 
 try {
   await mongoose.connect(
