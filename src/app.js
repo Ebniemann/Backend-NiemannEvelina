@@ -31,7 +31,7 @@ const options = {
     info: {
       title: "API E-commerce",
       version: "1.0.0",
-      description: "Documento API eve",
+      description: "API e-commerce de Evelina Niemann",
     },
   },
   apis: [`${__dirname}/docs/*.yaml`],
