@@ -1,5 +1,4 @@
 import { Router } from "express";
-
 import { UserController } from "../controller/user.controller.js";
 import { autorizacion } from "../middleware/autorizacion.js";
 import { upload } from "../middleware/multer.js";
@@ -17,3 +16,7 @@ router.post(
   ]),
   UserController.updateUserDocumentStatus
 );
+
+router.get("/", UserController.getUser);
+
+router.delete("/remove", UserController.deleteUser);

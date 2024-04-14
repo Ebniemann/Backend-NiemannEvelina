@@ -1,4 +1,5 @@
 import { UserService } from "../Services/user.service.js";
+import { sendEmail } from "../mailer/mailer.js";
 
 export class UserController {
   static async togglePremiumIfHasDocuments(req, res) {
@@ -56,6 +57,39 @@ export class UserController {
     } catch (error) {
       console.error("Error al cargar documentos:", error);
       return res.status(500).json({ message: "Error interno del servidor" });
+    }
+  }
+
+  static async getUser(req, res) {
+    try {
+      const users = await UserService.users();
+      const data = users.map((user) => ({
+        name: user.nombre,
+        apellido: user.apellido,
+        email: user.email,
+      }));
+      res.status(200).json({ data });
+    } catch (error) {
+      res.status(500).json({
+        error: "Error inesperado del lado del servidor",
+      });
+    }
+  }
+
+  static async deleteUser(req, res) {
+    try {
+      await UserService.removeInactiveUsers();
+      const usuariosEliminados = await UserService.getDeletedUsers();
+      const message = "Tu cuenta ha sido eliminada debido a inactividad.";
+      await sendEmail("Cuenta Eliminada", message, usuariosEliminados);
+
+      res.status(200).json({
+        message: `Usuarios eliminados y correos electrónicos enviados`,
+      });
+    } catch (error) {
+      res.status(500).json({
+        error: "Error inesperado del lado del servidor",
+      });
     }
   }
 }

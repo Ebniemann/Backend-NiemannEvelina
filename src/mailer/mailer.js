@@ -1,40 +1,33 @@
 import nodemailer from "nodemailer";
+import path from "path";
 import TransportStream from "winston-transport";
-// import PASS_GMAIL from "../utils.js";
+import PASS_GMAIL from "../utils.js";
 
-const gmail = nodemailer.createTransport({
+const transport = nodemailer.createTransport({
   service: "gmail",
   port: 587,
   auth: {
     user: "evelinaniemann@gmail.com",
-    pass: "hxqj ohkq pemz jvon",
+    pass: "hxqjohkqpemzjvon",
   },
 });
 
-const enviarEmail = (to, subject, message) => {
-  return gmail.sendMail({
-    // from: "Evelina Niemann evelinaniemann@gmail.com",
-    // to: "evelinaniemann@gmail.com",
-    // subject: "Prueba - Desde mi código",
-    // html: `
-    // <h2 style="color:red">Restablecer clave</h2>
-    // <img src='cid:adjunto' width='200'>
-    // <p>Puede reestablecer su clave desde el siguiente link</p>
-    // <a>LINK</a>
-    // `,
-
-    // attachments: {
-    //   path: "../imagenes/clave.jpeg",
-    //   filename: "recuperoClave.jpeg",
-    //   cid: "adjunto",
-    // },
-
-    to,
-    subject,
-    html: message,
-  });
+export const sendEmail = async (subject, message) => {
+  try {
+    const info = await transport.sendMail({
+      from: "Evelina Niemann <evelinaniemann@gmail.com>",
+      to: "evelinaniemann@gmail.com",
+      subject: subject,
+      html: message,
+    });
+    console.log("Correo electrónico enviado:", info);
+    return info;
+  } catch (error) {
+    console.error("Error al enviar correo electrónico:", error);
+    throw new Error("Error al enviar correo electrónico");
+  }
 };
 
-enviarEmail()
-  .then((res) => console.log(res))
-  .catch((err) => console.log(err.message));
+// sendEmail()
+//   .then((res) => console.log(res))
+//   .catch((err) => console.log(err.message));
