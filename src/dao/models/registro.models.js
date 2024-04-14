@@ -21,7 +21,6 @@ const registroEsquema = new mongoose.Schema(
 
 const loginConnection = mongoose.createConnection(
   "mongodb+srv://ebelen89:coderapp@cluster0.lskftra.mongodb.net/login",
-  { useNewUrlParser: true, useUnifiedTopology: true }
 );
 
 export const registroModels = loginConnection.model(

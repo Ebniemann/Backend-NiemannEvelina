@@ -1,16 +1,16 @@
 paths:
   /api/sessions/login:
     post:
-      summary: login con usuario y contraseña
+      summary: Login con usuario y contraseña
       tags:
         - sessions
       responses:
         "200":
-          description: Redireccion al Perfil
+          description: Redireccion al perfil
         "500":
           description: Redireccion al error /errorLogin
 
-  /api/sessions/registro:
+  /api/sessions/signup:
     post:
       summary: Registro de un nuevo usuario
       tags:

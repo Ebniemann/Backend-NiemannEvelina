@@ -1,4 +1,4 @@
-http://localhost:8080/api/sessions/callbackGitHub
+http://localhost:8080/api/sessions/github-callback
 
 Owned by: @Ebniemann
 

@@ -3,116 +3,124 @@ import { ManagerProduct } from "../dao/Manager/ProductManagerM.js";
 import { ManagerChat } from "../dao/Manager/ChatManager.js";
 import { ManagerCart } from "../dao/Manager/CartManagerM.js";
 
-export const router = Router();
+const router = Router();
 const productManager = new ManagerProduct();
 const chatManager = new ManagerChat();
 const cartManager = new ManagerCart();
 
+// Middleware para manejar errores comunes
+const errorHandler = (res, errorMessage) => {
+  console.error(errorMessage);
+  res.status(500).render("error", { message: errorMessage });
+};
+
 const auth = (req, res, next) => {
+  console.log('auth', req.session.usuario)
   if (!req.session.usuario) {
-    res.redirect("/login");
+    return res.redirect("/login");
   }
   next();
 };
 
+// Rutas
 router.get("/", (req, res) => {
-  res.setHeader("Content-Type", "text/html");
-  res.status(200).render("home");
+  res.render("home");
 });
 
 router.get("/producto", auth, async (req, res) => {
+  console.log('Ruta Vista /producto')
   try {
-    let usuario = req.session.usuario;
+    const usuario = req.session.usuario;
     const products = await productManager.listarProductos();
-
-    res.status(200).render("producto", {
+    res.render("producto", {
       usuario,
       products,
       titulo: "Productos",
       estilos: "stylesHome",
     });
   } catch (error) {
-    console.error("Error al obtener productos:", error);
-    res.status(500).render("error", { message: "Error al obtener productos" });
+    errorHandler(res, "Error al obtener productos: " + error.message);
   }
 });
 
 router.get("/chat", auth, async (req, res) => {
+  console.log('Ruta Vista /chat')
   try {
     const messages = await chatManager.obtenerMessage();
-    res.status(200).render("chat", {
+    res.render("chat", {
       titulo: "chat",
       estilos: "styles",
       messages: messages || [],
     });
   } catch (error) {
-    console.error("Error al renderizar la página de chat:", error);
-    res.status(500).send("Error interno del servidor");
+    errorHandler(res, "Error al renderizar la página de chat: " + error.message);
   }
 });
 
 router.get("/cart/:cid", async (req, res) => {
+  console.log('Ruta Vista /cart/:cid')
   const { cid } = req.params;
-
   try {
     const cart = await cartManager.obtenerCarritoPorId(cid);
-
-    res.status(200).render("cart", {
+    res.render("cart", {
       cart,
       name: "Carrito de compras",
       estilos: "stylesHome",
     });
   } catch (error) {
-    console.error("Error al obtener carrito:", error);
-    res.status(500).render("error al obtener carrito de compras");
+    errorHandler(res, "Error al obtener carrito: " + error.message);
   }
 });
 
-router.get("/registro", (req, res) => {
-  console.log("Sesión después de almacenar el usuario:", req.session);
-
-  let { error } = req.query;
-  res.setHeader("Content-Type", "text/html");
-  res
-    .status(200)
-    .render("registro", { error, titulo: "Registro", estilos: "stylesHome" });
+router.get("/signup", (req, res) => {
+  console.log('Ruta Vista /sigup')
+  const { error } = req.query;
+  res.render("signup", { error, titulo: "Registro", estilos: "stylesHome" });
 });
 
 router.get("/login", (req, res) => {
-  let { error, mensaje } = req.query;
-  res.setHeader("Content-Type", "text/html");
-  res.status(200).render("login", {
-    error,
-    mensaje,
-    titulo: "Login",
-    estilos: "stylesHome",
-  });
+  console.log('Ruta Vista /login')
+  const { error, mensaje } = req.query;
+  res.render("login", { error, mensaje, titulo: "Ingresar", estilos: "stylesHome" });
 });
 
-router.get("/perfil", auth, async (req, res) => {
+router.get("/profile", auth, async (req, res) => {
+  console.log('Ruta Vista /profile')
   try {
     const usuario = req.session.usuario;
-    console.log("Usuario en la sesión:", usuario);
 
-    res.status(200).render("perfil", {
+    res.render("profile", {
       usuario,
-      titulo: "Perfil",
-      estilos: "stylesHome",
+      titulo: "Perfil de usuario",
+      estilos: "stylesProfile",
     });
   } catch (error) {
-    console.error("Error al obtener el perfil del usuario:", error);
-    res.status(500).render("error al obtener el perfil del usuario");
+    errorHandler(res, "Error al obtener el perfil del usuario: " + error.mensaje);
   }
 });
 
-router.get("/recuperoclave", (req, res) => {
-  console.log("Se ha alcanzado la ruta /recuperoclave");
-  res.render("recuperoclave");
+router.get("/password-recovery", (req, res) => {
+  console.log('Ruta Vista /password-recovery')
+  const { error, mensaje } = req.query;
+  res.render("password-recovery", { error, mensaje, titulo: "Recuperacion de clave", estilos: "stylesPasswordRecovery" });
+});
+
+router.get("/reset-password", (req, res) => {
+  console.log('Ruta Vista /reset-password')
+  const { error, mensaje, token } = req.query;
+  res.render("reset-password", { error, mensaje, token, titulo: "Recuperacion de clave", estilos: "stylesPasswordRecovery" });
 });
 
 router.get("/documents", (req, res) => {
-  let { error, message } = req.query;
-
-  res.setHeader("Content-Type", "text/html");
-  res.status(200).render("documents", { error, message });
+  console.log('Ruta Vista /documents')
+  const { error, mensaje } = req.query;
+  res.render("documents", { error, mensaje, titulo: "Documentos", estilos: "stylesDocuments" });
 });
+
+router.get("/signup", (req, res) => {
+  console.log('Ruta Vista /signup')
+  let { error, mensaje } = req.query;
+  res.render("signup", { error, mensaje, titulo: "Registro", estilos: "stylesSignup" });
+});
+
+export default router;

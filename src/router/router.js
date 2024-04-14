@@ -6,7 +6,7 @@ export class MiRouter {
     this.init();
   }
 
-  init() {}
+  init() { }
 
   getRouter() {
     return this.router;
@@ -26,11 +26,11 @@ export class MiRouter {
     this.router.post(
       ruta,
       this.misRespuestas,
-      ruta !== "/login" && ruta !== "/registro"
+      ruta !== "/login" && ruta !== "/signup"
         ? passportCall("jwt")
         : (req, res, next) => {
-            next();
-          },
+          next();
+        },
       this.acceso(permisos),
       this.agregaTryCatch(funciones)
     );
@@ -60,7 +60,7 @@ export class MiRouter {
         } catch (error) {
           params[1].errorServer(
             "Error inesperado. Contacte al administrador. Detalle: " +
-              error.message
+            error.message
           );
         }
       };

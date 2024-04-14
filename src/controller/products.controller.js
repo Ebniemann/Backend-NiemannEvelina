@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { productsModels } from "../dao/models/products.models.js";
-import { ProductService } from "../Services/products.service.js";
+import { ProductService } from "../services/products.service.js";
 
 export class ProductController {
   static async getProduct(req, res) {

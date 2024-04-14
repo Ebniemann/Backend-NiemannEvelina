@@ -1,5 +1,5 @@
 import { UserService } from "../Services/user.service.js";
-import { sendEmail } from "../mailer/mailer.js";
+import { sendEmail } from "../mailer/index.js";
 
 export class UserController {
   static async togglePremiumIfHasDocuments(req, res) {

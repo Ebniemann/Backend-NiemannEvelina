@@ -9,7 +9,9 @@ const usuarioEsquema = new mongoose.Schema(
       type: String,
       unique: true,
     },
+    avatar: String,
     password: String,
+    resetToken: String,
     rol: {
       type: String,
       enum: ["usuario", "admin", "premium"],
@@ -21,6 +23,7 @@ const usuarioEsquema = new mongoose.Schema(
         reference: { type: String, required: true },
       },
     ],
+    profile: { type: Object, required: false },
     cart: { type: mongoose.Schema.Types.ObjectId, ref: "carts" },
     conexion: { type: Date, default: Date.now },
   },
@@ -29,7 +32,6 @@ const usuarioEsquema = new mongoose.Schema(
 
 const loginConnection = mongoose.createConnection(
   "mongodb+srv://ebelen89:coderapp@cluster0.lskftra.mongodb.net/login",
-  { useNewUrlParser: true, useUnifiedTopology: true }
 );
 
 const usuarioModels = loginConnection.model("usuarios", usuarioEsquema);

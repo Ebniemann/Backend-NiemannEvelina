@@ -1,5 +1,5 @@
 paths:
-  /api/products/producto:
+  /api/products/:
     get:
       summary: Obtener lista de productos
       tags:
@@ -9,7 +9,15 @@ paths:
           description: Respuesta exitosa, lista de productos
         "500":
           description: Error al obtener productos
-
+    post:
+      summary: Cargar un producto nuevo
+      tags:
+        - Products
+      responses:
+        "200":
+          description: Respuesta exitosa, producto creado
+        "404":
+          description: Título y precio son datos obligatorios
   /api/products/{id}:
     get:
       summary: Obtener un producto por ID
@@ -26,7 +34,6 @@ paths:
           description: Error al obtener el producto
         "400":
           description: Ingrese un ID válido
-
     put:
       summary: Editar un producto buscado por ID
       tags:
@@ -58,14 +65,4 @@ paths:
           description: No se encontró un producto con ese ID
         "500":
           description: Error al obtener el producto
-
-  /api/products/:
-    post:
-      summary: Cargar un producto nuevo
-      tags:
-        - Products
-      responses:
-        "200":
-          description: Respuesta exitosa, producto creado
-        "404":
-          description: Título y precio son datos obligatorios
+    

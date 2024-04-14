@@ -3,7 +3,7 @@ import { UserController } from "../controller/user.controller.js";
 import { autorizacion } from "../middleware/autorizacion.js";
 import { upload } from "../middleware/multer.js";
 
-export const router = Router();
+const router = Router();
 
 router.put("/premium/:uid", UserController.togglePremiumIfHasDocuments);
 
@@ -20,3 +20,5 @@ router.post(
 router.get("/", UserController.getUser);
 
 router.delete("/remove", UserController.deleteUser);
+
+export default router

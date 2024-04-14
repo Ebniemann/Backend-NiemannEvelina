@@ -1,28 +1,29 @@
 import nodemailer from "nodemailer";
-import { GMAIL, PASS_GMAIL } from "../utils.js";
 
 const transport = nodemailer.createTransport({
   service: "gmail",
   port: 587,
   auth: {
-    user: GMAIL,
-    pass: PASS_GMAIL,
+    user: process.env.GMAIL_EMAIL,
+    pass: process.env.GMAIL_PASSWORD,
   },
 });
 
-export const sendEmail = async ({
-  to = "evelinaniemann@gmail.com",
-  from = "Evelina Niemann <evelinaniemann@gmail.com>",
-  subject,
-  message,
-}) => {
+console.log({
+  user: process.env.GMAIL_EMAIL,
+  pass: process.env.GMAIL_PASSWORD,
+})
+
+
+export const sendEmail = async ({ to = "evelinaniemann@gmail.com", from = "Evelina Niemann <evelinaniemann@gmail.com>", subject, message }) => {
   try {
     const info = await transport.sendMail({
       from,
       to,
-      subject: subject,
+      subject,
       html: message,
     });
+    console.log("Correo electrónico enviado:", info);
     return info;
   } catch (error) {
     console.error("Error al enviar correo electrónico:", error);

@@ -20,8 +20,7 @@ paths:
           description: Error inesperado del lado del servidor
         "403":
           description: Un usuario premium no puede agregar sus propios productos al carrito
-
-  /api/cart/{cid}/product/{pid}/quantity?:
+  /api/cart/{cid}/product/{pid}/quantity:
     put:
       summary: Actualiza la cantidad de productos en un carrito
       tags:
@@ -44,7 +43,7 @@ paths:
         "500":
           description: Error inesperado del lado del servidor
 
-  /{cid}/product/{pid}:
+  /api/cart/{cid}/product/{pid}:
     delete:
       summary: Elimina productos del carrito
       tags:
@@ -63,7 +62,8 @@ paths:
           description: Ingrese un ID válido de carrito.
         "500":
           description: Error inesperado del lado del servidor
-  /{cid}:
+
+  /api/cart/{cid}:
     delete:
       summary: Elimina un carrito.
       tags:
@@ -80,7 +80,7 @@ paths:
         "500":
           description: Error inesperado del lado del servidor
 
-  /{cid}/purchase:
+  /api/cart/{cid}/purchase:
     put:
       summary: Realizar la compra
       tags:

@@ -1,8 +1,0 @@
-<h2>Restablecer contraseña</h2>
-{{#if error }}
-  <div style="color: red">{{error}}</div>
-{{/if}}
-<form action="/api/sessions/recuperoclave" method="post">
-  <input type="email" name="email" placeholder="Ingrese su email"/>
-  <input type="submit" value="restablecer clave"/>
-</form>

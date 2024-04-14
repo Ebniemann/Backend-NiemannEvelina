@@ -1,0 +1,81 @@
+<div class="container py-5">
+  <div class="row d-flex justify-content-center align-items-center">
+    <div class="col col-lg-6 mb-4 mb-lg-0">
+      <div class="card mb-3" style="border-radius: .5rem;">
+        <div class="row g-0">
+          <div
+            class="col-md-4 gradient-custom text-center text-white"
+            style="border-top-left-radius: .5rem; border-bottom-left-radius: .5rem;"
+          >
+            <img
+              src="{{#if usuario.avatar }}{{usuario.avatar}}{{else}}{{"https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"}}{{/if}}"
+              alt="Avatar"
+              class="img-fluid mt-5 mb-2 avatar"
+            />
+            <h5 class="mb-0">{{usuario.nombre}}</h5>
+            <p>{{usuario.rol}}</p>
+          </div>
+          <div class="col-md-8">
+            <div class="card-body p-4">
+              <h6 class="mb-1">Información</h6>
+              <hr class="mt-0 mb-2" />
+              <div class="row pt-1">
+                <div class="col-12 mb-2">
+                  <h6 class="mb-0">Email</h6>
+                  <p class="text-muted mb-0">{{usuario.email}}</p>
+                </div>
+              </div>
+              <div class="row pt-1">
+                <div class="col-12 mb-3">
+                  <h6 class="mb-0">Teléfono</h6>
+                  <p class="text-muted mb-0">{{usuario.phone}}</p>
+                </div>
+              </div>
+
+              {{#if usuario.profile}}
+                <h6 class="mb-1">Redes Sociales</h6>
+                <hr class="mt-0 mb-2" />
+                <div class="row pt-1">
+                  <div class="col-6 mb-3">
+                    <a
+                      class="btn bg-dark btn-block btn-sm mb-0"
+                      href="{{usuario.profile._json.html_url}}"
+                      target="_blank"
+                    ><i class="fab fa-github"></i> Git Hub</a>
+                  </div>
+                </div>
+              {{/if}}
+
+              <h6 class="mb-1">Documentos</h6>
+              <hr class="mt-0 mb-2" />
+              <div class="row pt-1">
+                <div class="col-6 mb-3">
+                  <a
+                    class="btn btn-primary btn-block btn-sm mb-0"
+                    href="/documents"
+                  >Cargar archivos</a>
+                </div>
+              </div>
+              <h6 class="mb-1">Carrito de compras</h6>
+              <hr class="mt-0 mb-2" />
+              <div class="row pt-1">
+                <div class="col-6 mb-3">
+                  <a
+                    class="btn btn-primary btn-block btn-sm"
+                    href="/cart/{{usuario.cart}}"
+                  >Ver carrito</a>
+                </div>
+                <div class="col-6 mb-3">
+                  <a
+                    class="btn btn-primary btn-block btn-sm"
+                    href="/producto"
+                  >Continuar</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

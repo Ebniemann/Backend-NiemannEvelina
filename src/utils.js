@@ -10,25 +10,39 @@ const __dirname = dirname(__filename);
 
 export default __dirname;
 
-export const SECRETKEY = "Eve123";
 
-export const PASS_GMAIL = "hxqjohkqpemzjvon";
-export const GMAIL = "evelinaniemann@gmail.com";
+// Generate JWT token for password reset
+export const generatePasswordResetToken = (email) => {
+  const token = jwt.sign({ email }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
+  return token;
+};
 
-export const generaToken = (usuario) => {
-  const payload = {
+export const generaAuthToken = (usuario) => {
+  const token = {
     id: usuario.id,
     nombre: usuario.nombre,
     rol: usuario.rol,
   };
 
-  return jwt.sign(payload, SECRETKEY, { expiresIn: "1h" });
+  return jwt.sign(token, process.env.JWT_SECRET_KEY, { expiresIn: "1h" });
+};
+
+// Verify JWT token for password reset
+export const verifyPasswordResetToken = (token) => {
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+    console.log(decoded)
+    return decoded; // Extract email from the token
+  } catch (error) {
+    throw new Error('Invalid or expired token');
+  }
 };
 
 export const creaHash = (password) =>
   bcrypt.hashSync(password, bcrypt.genSaltSync(10));
-export const validaPassword = (usuario, password) =>
-  bcrypt.compareSync(password, usuario.password);
+
+export const validaPassword = (hashedPassword, password) =>
+  bcrypt.compareSync(password, hashedPassword);
 
 const loggerDesarrollo = winston.createLogger({
   transports: [
@@ -73,6 +87,7 @@ const LogProduccion = (req, res, next) => {
   req.logger = loggerProduccion;
   next();
 };
+
 export { LogDesarollo, LogProduccion };
 
 export const loggerMiddleware =

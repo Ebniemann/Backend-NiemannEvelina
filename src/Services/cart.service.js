@@ -165,6 +165,7 @@ export class CartService {
         return total + productoPrice * producto.quantity;
       }, 0);
     };
+
     try {
       const cart = await CartDao.findCartById(cid);
 
@@ -178,7 +179,6 @@ export class CartService {
       }
 
       const productosCompra = cart.carrito;
-
       const fallaProductos = [];
       const productosExitosos = [];
 
@@ -223,6 +223,7 @@ export class CartService {
       };
     } catch (error) {
       res.setHeader("Content-Type", "application/json");
+
       return res
         .status(500)
         .json({ error: "Error inesperado del lado del servidor" });

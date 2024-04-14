@@ -2,7 +2,7 @@ import { Router } from "express";
 import { CartController } from "../controller/cart.controller.js";
 import { autorizacion } from "../middleware/autorizacion.js";
 
-export const router = Router();
+const router = Router();
 
 router.get("/", CartController.getCart);
 
@@ -19,3 +19,5 @@ router.delete("/:cid/product/:pid", CartController.deleteProductCart);
 router.delete("/:cid", CartController.deleteCart);
 
 router.put("/:cid/purchase");
+
+export default router;

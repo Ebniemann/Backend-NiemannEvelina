@@ -1,8 +1,8 @@
 import { cartModel } from "../dao/models/carts.models.js";
 import { productsModels } from "../dao/models/products.models.js";
 import mongoose from "mongoose";
-import { CartService } from "../Services/cart.service.js";
-import { ProductService } from "../Services/products.service.js";
+import { CartService } from "../services/cart.service.js";
+import { ProductService } from "../services/products.service.js";
 
 export class CartController {
   static async getCart(req, res) {

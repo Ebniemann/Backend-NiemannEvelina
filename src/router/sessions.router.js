@@ -1,137 +1,115 @@
 import { Router } from "express";
+import { UserService } from "../Services/user.service.js";
+import { creaHash, verifyPasswordResetToken } from '../utils.js'
 import passport from "passport";
-import jwt from "jsonwebtoken";
-import { usuarioModels } from "../dao/models/usuario.models.js";
-import SECRETKEY from "../utils.js";
 
-export const router = Router();
+const router = Router();
 
-router.get("/github", passport.authenticate("github", {}), (req, res) => {});
+// URL de redirección para errores de autenticación
+const authErrorRedirect = "/login?error=";
 
+// URL de redirección para éxito en la autenticación
+const successRedirect = "/profile";
+
+// GitHub Authentication
+router.get("/github-error", (req, res) => {
+  res.redirect(authErrorRedirect + "Error de autenticación con GitHub");
+});
+router.get("/github", passport.authenticate("github", {}));
 router.get(
   "/callbackGitHub",
-  passport.authenticate("github", {
-    failureRedirect: "/api/sessions/errorGitHub",
-  }),
+  passport.authenticate("github", { failureRedirect: "/api/sessions/github-error" }),
   (req, res) => {
-    req.session.usuario = req.user;
-    res.redirect("/producto");
-  }
-);
-
-router.get("/errorGitHub", (req, res) => {
-  res.setHeader("Content-Type", "application/json");
-  res.status(500).json({
-    error: "error de autenticar con github",
-  });
-});
-
-router.get("/errorLogin", (req, res) => {
-  res.redirect("/registro?error=Error en el proceso de registro");
-});
-
-router.post(
-  "/login",
-  passport.authenticate("login", {
-    failureRedirect: "/api/sessions/errorLogin",
-  }),
-
-  async (req, res) => {
-    try {
-      console.log("Datos de usuario login:", req.user);
-
-      if (req.isAuthenticated()) {
-        req.session.usuario = {
-          nombre: req.user.nombre,
-          email: req.user.email,
-          rol: req.user.rol,
-          edad: req.user.edad,
-          apellido: req.user.apellido,
-          cart: req.user.cart,
-        };
-      }
-      console.log(req.session);
-
-      req.session.userId = req.user._id;
-
-      const token = jwt.sign(
-        { email: req.user.email, rol: req.user.rol },
-        SECRETKEY,
-        {
-          expiresIn: "1h",
-        }
-      );
-
-      // res.json({ token: token });
-      res.redirect("/perfil");
-    } catch (error) {
-      console.error("Error en el proceso de inicio de sesión:", error);
-      res.redirect(
-        "/login?error=Error inesperado, intente nuevamente en 10 minutos"
-      );
+    if (req.isAuthenticated()) {
+      const { password, profile, ...rest } = req.user;
+      req.session.usuario = rest;
     }
+
+    res.redirect(successRedirect);
   }
 );
 
+// Login
+router.get("/login-error", (req, res) => {
+  res.redirect(authErrorRedirect + "Usuario o contraseña incorrectos");
+});
+router.post("/login", passport.authenticate("login", { failureRedirect: "/api/sessions/login-error" }), async (req, res) => {
+  if (req.isAuthenticated()) {
+    const { password, profile, ...rest } = req.user;
+    req.session.usuario = rest;
+  }
+
+  req.session.userId = req.user._id;
+
+  try {
+    res.redirect(successRedirect);
+  } catch (error) {
+    res.redirect(authErrorRedirect + "Error inesperado, intente nuevamente en 10 minutos");
+  }
+});
+
+// Logout
 router.get("/logout", (req, res) => {
   req.session.destroy((error) => {
     if (error) {
-      res.redirect("/login?error=Fallo en el logout");
+      res.redirect(authErrorRedirect + "Hubo un error al cerrar sesión");
+    } else {
+      res.redirect("/login");
     }
   });
-
-  res.redirect("/login");
 });
 
-router.get("/errorRegistro", (req, res) => {
-  res.redirect("/registro?error=Error en el proceso de registro");
+// signup
+router.get("/signup-error", (req, res) => {
+  res.redirect(authErrorRedirect + "Error al intentar registrarse");
+});
+router.post("/signup", passport.authenticate("signup", { failureRedirect: "/api/sessions/signup-error" }), async (req, res) => {
+  const { email } = req.body;
+  res.redirect(`/login?mensaje=Usuario ${email} registrado correctamente`);
 });
 
-router.post(
-  "/registro",
-  passport.authenticate("registro", {
-    failureRedirect: "/api/sessions/errorRegistro",
-  }),
-  async (req, res) => {
-    let { email } = req.body;
-    res.redirect(`/login?mensaje=Usuario ${email} registrado correctamente`);
+// Route to initiate password recovery
+router.post('/password-recovery', async (req, res) => {
+  try {
+    console.log(req.body)
+    const { email } = req.body;
+    const emailsent = await UserService.sendRecoverPasswordEmail(email)
+
+    if (emailsent) {
+      res.redirect(`/reset-password`);
+    } else {
+      res.redirect(`/password-recovery?mensaje=Error al enviar email de recuperación`);
+    }
+  } catch (error) {
+    console.error('Error in password recovery:', error);
+    res.status(500).json({ message: 'Internal server error' });
   }
-);
-
-router.get("/errorRecupero", (req, res) => {
-  res.redirect("/recuperoclave?error=Error en el proceso");
 });
 
-router.post(
-  "/recuperoclave",
-  passport.authenticate("recuperoclave", {
-    failureRedirect: "/api/sessions/errorRecupero",
-  }),
-  async (req, res) => {
-    let { email } = req.body;
-    let usuario = await usuarioModels.findOne(email);
+// Route to handle password reset
+router.post('/reset-password', async (req, res) => {
+  try {
+    const { token, password, repeat_password } = req.body;
 
-    try {
-      if (!usuario) {
-        return res.redirect("errorRecupero");
+    if (password === repeat_password) {
+      // Verify the token
+      const decryptedToken = verifyPasswordResetToken(token);
+
+      // Find the user by decryptedToken and update the password
+      const user = await UserService.findOneAndUpdate({ email: decryptedToken.email }, { password: creaHash(password) });
+
+      if (!user) {
+        return res.status(404).json({ message: 'Error al actualizar la clave.' });
       }
 
-      delete usuario.password;
-      let token = jwt.sign({ ...usuario }, SECRETKEY, { expiresIn: "1h" });
-
-      let message = `Puede restablecer su clave desde el siguiente link:
-      http://localhost:8080/api/sessions/recuperoclave02`;
-
-      let respuesta = await enviarEmail(email, "Restablecer clave", message);
-
-      return res.redirect("recuperoclave", {
-        mensaje: "Correo enviado con instrucciones para restablecer la clave",
-        respuesta: respuesta,
-      });
-    } catch (error) {
-      console.error("Error en el proceso de recupero de clave:", error);
-
-      return res.redirect("errorRecupero");
+      res.redirect(`/login`);
+    } else {
+      res.redirect(`/reset-password?mensaje=Las claves no coinciden.`);
     }
+  } catch (error) {
+    console.error('Error in password reset:', error);
+    res.status(400).json({ message: error.message });
   }
-);
+});
+
+export default router;
