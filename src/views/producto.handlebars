@@ -1,47 +1,49 @@
-<h1>Bienvenido</h1>
-<br>
-<br>
-<h2>Perfil {{usuario.nombre}}</h2>
-<hr>
-<p>Nombre: {{usuario.nombre}} - Correo Electronico: <strong>{{usuario.email}}</strong></p>
-<h2>Productos</h2>
-<hr>
-<ul>
-  <strong>Productos:</strong>
-  {{#each products}}
-    <li>
-      <p><strong>Título:</strong> {{title}}</p>
-      <p><strong>Precio:</strong> {{price}}</p>
-      <button class="addToCartButton">Agregar al Carrito</button>
-    </li>
-  {{/each}}
-</ul>
-<br>
-<br>
+<div class="container">
+  <h2>Productos</h2>
+  <div class="row">
 
+    {{#each products}}
+      <div class="col-md-4">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">{{title}}</h5>
+            <p class="card-text"><strong>Precio:</strong> ${{price}}</p>
+            <button
+              class="btn btn-primary addToCartBtn"
+              data-cart-id="{{../usuario.cart}}"
+              data-product-id="{{_id}}"
+              data-quantity="1"
+            >Agregar al carrito</button>
+          </div>
+        </div>
+      </div>
+    {{/each}}
+  </div>
 
-<div>
-<a href="/chat">Chat</a>
-<a href="/cart">Carrito</a>
-
-<a href="/products?page=1&limit={{limit}}">Pág.1</a>
-{{#if hasPrevPage}}
-  <a href="/products?page={{prevPage}}&limit={{limit}}">Anterior</a>
-{{else}}
-  <span>No hay página anterior</span>
-{{/if}}
-
-{{#if hasNextPage}}
-  <a href="/products?page={{nextPage}}&limit={{limit}}">Siguiente</a>
-{{else}}
-  <span>No hay página siguiente</span>
-{{/if}}
-
-
-<a href="/products?page={{totalPages}}&limit={{limit}}">ultima Pag</a>
-
+  <div class="row">
+    <div class="col-md-6">
+      <a href="/products?page=1&limit={{limit}}" class="btn btn-primary">Página
+        1</a>
+      {{#if hasPrevPage}}
+        <a
+          href="/products?page={{prevPage}}&limit={{limit}}"
+          class="btn btn-primary"
+        >Anterior</a>
+      {{else}}
+        <span>No hay página anterior</span>
+      {{/if}}
+      {{#if hasNextPage}}
+        <a
+          href="/products?page={{nextPage}}&limit={{limit}}"
+          class="btn btn-primary"
+        >Siguiente</a>
+      {{else}}
+        <span>No hay página siguiente</span>
+      {{/if}}
+      <a
+        href="/products?page={{totalPages}}&limit={{limit}}"
+        class="btn btn-primary"
+      >Última Página</a>
+    </div>
+  </div>
 </div>
-
-<br>
-<hr>
-

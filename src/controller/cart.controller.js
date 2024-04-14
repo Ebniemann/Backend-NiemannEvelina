@@ -50,12 +50,21 @@ export class CartController {
   }
 
   static async putCart(req, res) {
+    const currentUser = req.user;
     const { cid, pid, quantity } = req.params;
 
     try {
-      const updateCart = await CartService.updateCart(cid, pid, quantity);
+      if (
+        currentUser.rol === "premium" &&
+        product.owner.equals(currentUser._id)
+      ) {
+        throw CustomErrors.CustomErrors(
+          "Un usuario premium no puede agregar a su carrito un producto que le pertenece",
+          STATUS_CODE.FORBIDDEN
+        );
+      }
 
-      console.log("Carrito actualizado", updateCart);
+      const updateCart = await CartService.updateCart(cid, pid, quantity);
       res.status(201).json(updateCart);
     } catch (error) {
       console.error(error.message);

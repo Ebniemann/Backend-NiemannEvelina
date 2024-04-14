@@ -1,8 +1,8 @@
-export const autorizacion = (rol) => {
+export const autorizacion = (AthorizedRoles) => {
   return (req, res, next) => {
-    const userRol = req.user && req.user.rol;
+    const userRol = req.user && req.user.rol ? req.user.rol : null;
 
-    if (userRol === rol) {
+    if (AthorizedRoles.includes(userRol)) {
       next();
     } else {
       res.status(403).json({ error: "Permiso denegado" });

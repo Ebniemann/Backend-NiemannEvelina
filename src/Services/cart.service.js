@@ -52,7 +52,7 @@ export class CartService {
     }
   }
 
-  static async updateCart(cid, pid, quantity) {
+  static async updateCart(cid, pid, quantity, rol) {
     try {
       const cart = await CartDao.findCartById(cid);
 
@@ -66,19 +66,8 @@ export class CartService {
       }
 
       const productToUpdate = cart.carrito.find((p) => p.producto.equals(pid));
-
-      const currentUser = req.usuario;
       const product = await productsModels.findById(pid);
 
-      if (
-        currentUser.rol === "premium" &&
-        product.owner.equals(currentUser._id)
-      ) {
-        throw CustomErrors.CustomErrors(
-          "Un usuario premium no puede agregar a su carrito un producto que le pertenece",
-          STATUS_CODE.FORBIDDEN
-        );
-      }
       if (productToUpdate) {
         productToUpdate.quantity += parseInt(quantity) || 1;
       } else {

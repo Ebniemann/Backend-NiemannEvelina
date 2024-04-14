@@ -18,6 +18,10 @@
   font-family: sans-serif;
 }
 
+body {
+  padding-top: 88px;
+}
+
 a {
   font-family: sans-serif;
   color: steelblue;
@@ -59,4 +63,45 @@ a {
   height: 80px;
   display: block;
   margin: 0 auto;
+}
+
+#loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(72, 72, 72, 0.7);
+  /* Fondo semitransparente */
+  z-index: 1100;
+  /* Asegura que esté por encima de otros elementos */
+  display: none;
+  /* Inicialmente oculto */
+}
+
+#loader {
+  border: 8px solid #f3f3f3;
+  /* Light grey */
+  border-top: 8px solid #3498db;
+  /* Blue */
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+  /* Animación de rotación */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Animación de rotación */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }

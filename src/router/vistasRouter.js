@@ -29,9 +29,24 @@ router.get("/", (req, res) => {
 
 router.get("/producto", auth, async (req, res) => {
   console.log('Ruta Vista /producto')
+
   try {
-    const usuario = req.session.usuario;
     const products = await productManager.listarProductos();
+
+    const { user } = req
+
+    const usuario = {
+      _id: user._id,
+      email: user.email,
+      nombre: user.nombre,
+      apellido: user.apellido,
+      edad: user.edad,
+      cart: user.cart,
+      rol: user.rol,
+    };
+
+    console.log(usuario)
+
     res.render("producto", {
       usuario,
       products,

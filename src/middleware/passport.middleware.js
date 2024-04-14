@@ -73,6 +73,8 @@ const loginStrategy = new local.Strategy(
 
       let usuario = await usuarioModels.findOne({ email });
 
+      console.log(usuario)
+
       if (!usuario || !validaPassword(usuario.password, password)) {
         return done(null, false, { message: "Credenciales incorrectas" });
       }
@@ -87,6 +89,7 @@ const loginStrategy = new local.Strategy(
         nombre: usuario.nombre,
         apellido: usuario.apellido,
         edad: usuario.edad,
+        cart: usuario.cart,
         rol: usuario.rol,
       };
 
