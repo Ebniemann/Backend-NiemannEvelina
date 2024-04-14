@@ -1,5 +1,5 @@
 import { ProductDao } from "../dao/products.MemoryDao.js";
-import { CustomErrors } from "../Errors/CustomErrors.js";
+import { CustomError } from "../Errors/CustomError.js";
 import { STATUS_CODE } from "../errors/tiposError.js";
 import { errorArgumentoProductos } from "../errors/erroresProducto.js";
 
@@ -8,7 +8,7 @@ export class ProductService {
     try {
       return await ProductDao.getProducts(query, options);
     } catch (error) {
-      CustomErrors.registerError(
+      throw new CustomError.registerError(
         "Error inesperado del lado del servidor",
         STATUS_CODE.INTERNAL_SERVER_ERROR,
         error
@@ -20,7 +20,7 @@ export class ProductService {
     try {
       const product = await ProductDao.findProductById(id);
       if (!product) {
-        CustomErrors.registerError(
+        CustomError.registerError(
           "No se encontro un producto con ese ID",
           STATUS_CODE.NOT_FOUND,
           errorArgumentoProductos(id)
@@ -39,7 +39,7 @@ export class ProductService {
     try {
       return await ProductDao.createProduct(productData);
     } catch (error) {
-      CustomErrors.registerError(
+      CustomError.registerError(
         "No se pudo crear el producto",
         STATUS_CODE.ERROR_BAD_REQUEST,
         error
@@ -51,7 +51,7 @@ export class ProductService {
     try {
       return await ProductDao.updateProduct(id, updatedData);
     } catch (error) {
-      CustomErrors.registerError(
+      CustomError.registerError(
         "No se pudo actualizar el producto",
         STATUS_CODE.ERROR_BAD_REQUEST,
         errorArgumentoProductos(id)
@@ -63,7 +63,7 @@ export class ProductService {
     try {
       const existingProduct = await ProductDao.findProductById(id);
       if (!existingProduct) {
-        CustomErrors.registerError(
+        CustomError.registerError(
           "No se encontro un producto con ese ID",
           STATUS_CODE.NOT_FOUND,
           errorArgumentoProductos(id)
@@ -74,7 +74,7 @@ export class ProductService {
         res.setHeader("Content-Type", "application/json");
         return res.status(200).json({ payload: "Eliminación exitosa" });
       } else {
-        CustomErrors.registerError(
+        CustomError.registerError(
           "No se pudo eliminar el producto",
           STATUS_CODE.ERROR_BAD_REQUEST,
           errorArgumentoProductos(id)

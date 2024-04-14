@@ -3,7 +3,7 @@ import { productsModels } from "../dao/models/products.models.js";
 import { ProductService } from "./products.service.js";
 import { ProductDao } from "../dao/products.MemoryDao.js";
 import { TicketService } from "./ticket.service.js";
-import { CustomErrors } from "../Errors/CustomErrors.js";
+import { CustomError } from "../Errors/CustomError.js";
 import { STATUS_CODE } from "../errors/tiposError.js";
 import { errorArgumentoCart } from "../errors/erroresCart.js";
 
@@ -58,7 +58,7 @@ export class CartService {
 
       if (!cart) {
         // return res.status(404).json({ message: "Carrito no encontrado" });
-        throw CustomErrors.registerError(
+        throw CustomError.registerError(
           "No se encontro un carrito con ese ID",
           STATUS_CODE.NOT_FOUND,
           errorArgumentoCart(cid)
@@ -91,7 +91,7 @@ export class CartService {
 
       if (!cart) {
         // throw error("No se encontro el carrito con ese Id");
-        throw CustomErrors.registerError(
+        throw CustomError.registerError(
           "No se encontro un carrito con ese ID",
           STATUS_CODE.NOT_FOUND,
           errorArgumentoCart(cid)
@@ -106,7 +106,7 @@ export class CartService {
         return "Eliminación exitosa";
       } else {
         // throw new Error("No se pudo eliminar el producto");
-        throw CustomErrors.registerError(
+        throw CustomError.registerError(
           "No se pudo eliminar el producto del carrito",
           STATUS_CODE.ERROR_SERVIDOR
         );
@@ -121,7 +121,7 @@ export class CartService {
       const cart = await CartDao.findCartById(cid);
       if (!cart) {
         // throw error("No se encontro un carrito con ese Id");
-        throw CustomErrors.registerError(
+        throw CustomError.registerError(
           "No se encontro un carrito con ese ID",
           STATUS_CODE.NOT_FOUND,
           errorArgumentoCart(cid)
@@ -160,7 +160,7 @@ export class CartService {
 
       if (!cart) {
         // throw new Error("Carrito no encontrado");
-        throw CustomErrors.registerError(
+        throw CustomError.registerError(
           "Carrito no encontrado",
           STATUS_CODE.NOT_FOUND,
           errorArgumentoCart(cid)

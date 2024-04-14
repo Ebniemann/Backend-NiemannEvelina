@@ -71,7 +71,7 @@ export class ProductController {
 
     if (!title || !price) {
       req.logger.log("error", "Falta completar titulo o precio");
-      throw CustomErrors.CustomErrors(
+      throw CustomError.CustomError(
         "Titulo y precio son datos obligatorios",
         STATUS_CODE.NOT_FOUND
       );
@@ -102,7 +102,7 @@ export class ProductController {
     let { id } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      throw CustomErrors.CustomErrors(
+      throw CustomError.CustomError(
         "No se encontro un producto con ese ID",
         STATUS_CODE.NOT_FOUND,
         errorArgumentoProductos(id)
@@ -125,7 +125,7 @@ export class ProductController {
     let { id } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      throw CustomErrors.CustomErrors(
+      throw CustomError.CustomError(
         "No se encontro un producto con ese ID",
         STATUS_CODE.NOT_FOUND,
         errorArgumentoProductos(id)

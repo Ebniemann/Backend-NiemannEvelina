@@ -59,7 +59,7 @@ export class CartController {
         currentUser.rol === "premium" &&
         product.owner.equals(currentUser._id)
       ) {
-        throw CustomErrors.CustomErrors(
+        throw CustomError.CustomError(
           "Un usuario premium no puede agregar a su carrito un producto que le pertenece",
           STATUS_CODE.FORBIDDEN
         );

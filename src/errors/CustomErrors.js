@@ -2,7 +2,14 @@ import * as fs from "fs";
 import * as path from "path";
 import __dirname from "../utils.js";
 
-export class CustomErrors {
+export class CustomError extends Error {
+  constructor(nombre, mensaje, statusCode, descripcion) {
+    super(mensaje);
+    this.name = nombre;
+    this.code = statusCode;
+    this.description = descripcion;
+  }
+
   static registerError(name, message, statusCode, description) {
     let error = new Error(message);
     error.date = new Date();
