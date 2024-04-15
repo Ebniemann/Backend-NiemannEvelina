@@ -58,7 +58,8 @@ export class CartService {
 
       if (!cart) {
         // return res.status(404).json({ message: "Carrito no encontrado" });
-        throw CustomError.registerError(
+        throw new CustomError(
+          "CustomError",
           "No se encontro un carrito con ese ID",
           STATUS_CODE.NOT_FOUND,
           errorArgumentoCart(cid)
@@ -91,7 +92,8 @@ export class CartService {
 
       if (!cart) {
         // throw error("No se encontro el carrito con ese Id");
-        throw CustomError.registerError(
+        throw new CustomError(
+          "CustomError",
           "No se encontro un carrito con ese ID",
           STATUS_CODE.NOT_FOUND,
           errorArgumentoCart(cid)
@@ -106,7 +108,8 @@ export class CartService {
         return "Eliminación exitosa";
       } else {
         // throw new Error("No se pudo eliminar el producto");
-        throw CustomError.registerError(
+        throw new CustomError(
+          "CustomError",
           "No se pudo eliminar el producto del carrito",
           STATUS_CODE.ERROR_SERVIDOR
         );
@@ -121,7 +124,8 @@ export class CartService {
       const cart = await CartDao.findCartById(cid);
       if (!cart) {
         // throw error("No se encontro un carrito con ese Id");
-        throw CustomError.registerError(
+        throw new CustomError(
+          "CustomError",
           "No se encontro un carrito con ese ID",
           STATUS_CODE.NOT_FOUND,
           errorArgumentoCart(cid)
@@ -160,7 +164,7 @@ export class CartService {
 
       if (!cart) {
         // throw new Error("Carrito no encontrado");
-        throw CustomError.registerError(
+        throw new CustomError(
           "Carrito no encontrado",
           STATUS_CODE.NOT_FOUND,
           errorArgumentoCart(cid)

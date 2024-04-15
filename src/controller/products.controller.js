@@ -1,18 +1,21 @@
 import mongoose from "mongoose";
 import { productsModels } from "../dao/models/products.models.js";
 import { ProductService } from "../services/products.service.js";
+import { STATUS_CODE } from "../errors/tiposError.js";
 
 export class ProductController {
   static async getProduct(req, res) {
     try {
-      const limit = parseInt(req.query.limit) || 10;
+      // Establece el límite predeterminado aquí
+      const limit = 10; // Por ejemplo, muestra 10 productos por página
       const page = parseInt(req.query.page) || 1;
-      const sort = req.query.sort === "desc" ? -1 : 1; // -1 para descendente, 1 para ascendente
+      const sort = req.query.sort === "desc" ? -1 : 1;
       const query = {};
 
       if (req.query.category) {
         query.category = req.query.category;
       }
+
       const options = {
         lean: true,
         limit,
@@ -20,23 +23,28 @@ export class ProductController {
         sort: { price: sort },
       };
 
-      const product = await ProductService.getProducts(query, options);
-
-      const { totalPages, hasNextPage, hasPrevPage, prevPage, nextPage } =
-        product;
+      const { docs, totalDocs } = await ProductService.getProducts(
+        query,
+        options
+      );
+      const totalPages = Math.ceil(totalDocs / limit);
+      const hasNextPage = page < totalPages;
+      const hasPrevPage = page > 1;
+      const nextPage = hasNextPage ? page + 1 : null;
+      const prevPage = hasPrevPage ? page - 1 : null;
 
       res.status(200).render("producto", {
-        products: product.docs,
+        products: docs,
         totalPages,
         hasNextPage,
         hasPrevPage,
         prevPage,
         nextPage,
-        limit,
+        limit, // Pasando el límite predeterminado a la vista
       });
     } catch (error) {
-      console.log(error.message);
-      res.status(500).json("error", { error: "Error al obtener productos" });
+      console.error(error.message);
+      res.status(500).json({ error: "Error al obtener productos" });
     }
   }
 
@@ -71,9 +79,11 @@ export class ProductController {
 
     if (!title || !price) {
       req.logger.log("error", "Falta completar titulo o precio");
-      throw CustomError.CustomError(
+      throw new CustomError(
+        "CustomError",
         "Titulo y precio son datos obligatorios",
-        STATUS_CODE.NOT_FOUND
+        STATUS_CODE.NOT_FOUND,
+        ""
       );
     }
 
@@ -102,7 +112,8 @@ export class ProductController {
     let { id } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      throw CustomError.CustomError(
+      throw new CustomError(
+        "CustomError",
         "No se encontro un producto con ese ID",
         STATUS_CODE.NOT_FOUND,
         errorArgumentoProductos(id)
@@ -125,7 +136,8 @@ export class ProductController {
     let { id } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      throw CustomError.CustomError(
+      throw new CustomError(
+        "CustomError",
         "No se encontro un producto con ese ID",
         STATUS_CODE.NOT_FOUND,
         errorArgumentoProductos(id)

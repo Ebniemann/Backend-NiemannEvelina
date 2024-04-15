@@ -8,17 +8,7 @@ export class CustomError extends Error {
     this.name = nombre;
     this.code = statusCode;
     this.description = descripcion;
-  }
-
-  static registerError(name, message, statusCode, description) {
-    let error = new Error(message);
-    error.date = new Date();
-    error.name = name;
-    error.code = statusCode;
-    error.message = message;
-    error.description = description;
-    this.logError(error);
-    return error;
+    CustomError.logError(this);
   }
 
   static logError(error) {
@@ -27,7 +17,7 @@ export class CustomError extends Error {
     // Formato del mensaje de registro con la fecha y hora actual
     const logMessage = `${new Date().toISOString()} - ${error.message}\n`;
 
-    // Escribir el message de registro en el archivo
+    // Escribir el mensaje de registro en el archivo
     fs.appendFile(logFilePath, logMessage, (err) => {
       if (err) {
         console.error("Error al guardar el registro:", err);

@@ -3,12 +3,13 @@ import { productsModels } from "../dao/models/products.models.js";
 import mongoose from "mongoose";
 import { CartService } from "../services/cart.service.js";
 import { ProductService } from "../services/products.service.js";
+import { STATUS_CODE } from "../errors/tiposError.js";
 
 export class CartController {
   static async getCart(req, res) {
     try {
       const cart = await CartService.getCart();
-      console.log(cart)
+      console.log(cart);
       res.status(200).json(cart);
     } catch (error) {
       res.status(500).json({
@@ -59,9 +60,11 @@ export class CartController {
         currentUser.rol === "premium" &&
         product.owner.equals(currentUser._id)
       ) {
-        throw CustomError.CustomError(
+        throw new CustomError(
+          "CustomError",
           "Un usuario premium no puede agregar a su carrito un producto que le pertenece",
-          STATUS_CODE.FORBIDDEN
+          STATUS_CODE.FORBIDDEN,
+          ""
         );
       }
 
