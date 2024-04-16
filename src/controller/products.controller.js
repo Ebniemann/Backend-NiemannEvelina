@@ -6,8 +6,7 @@ import { STATUS_CODE } from "../errors/tiposError.js";
 export class ProductController {
   static async getProduct(req, res) {
     try {
-      // Establece el límite predeterminado aquí
-      const limit = 10; // Por ejemplo, muestra 10 productos por página
+      const limit = 10;
       const page = parseInt(req.query.page) || 1;
       const sort = req.query.sort === "desc" ? -1 : 1;
       const query = {};
@@ -40,7 +39,7 @@ export class ProductController {
         hasPrevPage,
         prevPage,
         nextPage,
-        limit, // Pasando el límite predeterminado a la vista
+        limit,
       });
     } catch (error) {
       console.error(error.message);
@@ -57,6 +56,15 @@ export class ProductController {
     }
     try {
       const product = await ProductService.getProductById(id);
+
+      if (!product) {
+        throw new CustomError(
+          "CustomError",
+          "ProductController - getProductId - No se encontro un producto con ese ID",
+          STATUS_CODE.NOT_FOUND,
+          errorArgumentoProductos(id)
+        );
+      }
       res.setHeader("content-type", "application/json");
       return res.status(200).json({ payload: product });
     } catch (error) {
@@ -81,7 +89,7 @@ export class ProductController {
       req.logger.log("error", "Falta completar titulo o precio");
       throw new CustomError(
         "CustomError",
-        "Titulo y precio son datos obligatorios",
+        "ProductController - postProduct - Titulo y precio son datos obligatorios",
         STATUS_CODE.NOT_FOUND,
         ""
       );
@@ -124,6 +132,14 @@ export class ProductController {
 
     try {
       const result = await ProductService.updateProduct(id, updatedData);
+      if (!result) {
+        throw new CustomError(
+          "CustomError",
+          "ProductController - putProduct - No se pudo actualizar",
+          STATUS_CODE.NOT_FOUND,
+          errorUpdateProductos(id, updatedData)
+        );
+      }
       res.setHeader("Content-Type", "application/json");
       return res.status(200).json({ payload: result });
     } catch (error) {
@@ -138,7 +154,7 @@ export class ProductController {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       throw new CustomError(
         "CustomError",
-        "No se encontro un producto con ese ID",
+        "ProductController - deleteProduct - No se encontro un producto con ese ID",
         STATUS_CODE.NOT_FOUND,
         errorArgumentoProductos(id)
       );

@@ -1,21 +1,39 @@
 import { usuarioModels } from "../dao/models/usuario.models.js";
 import { UserDao } from "../dao/user.MemoryDao.js";
 import { generaAuthToken, generatePasswordResetToken } from "../utils.js";
-import { sendEmail } from '../mailer/index.js'
+import { sendEmail } from "../mailer/index.js";
 
 export class UserService {
   static async findOneAndUpdate(filters, params) {
     try {
       const user = await usuarioModels.findOneAndUpdate(filters, params);
+      if (!user) {
+        throw new CustomError(
+          "CustomError",
+          "UserService - findOneAndUpdate - No se pudo actualizar el usuario.",
+          STATUS_CODE.ERROR_BAD_REQUEST,
+          errorArgument(filters, params)
+        );
+      }
       return user;
     } catch (error) {
-      throw new Error(`Error al actualizar el usuario por ID: ${error.message}`);
+      throw new Error(
+        `Error al actualizar el usuario por ID: ${error.message}`
+      );
     }
   }
 
   static async findUserById(uid) {
     try {
       const user = await usuarioModels.findById(uid);
+      if (!user) {
+        throw new CustomError(
+          "CustomError",
+          "UserService - findUserById - No se encontro un Usuario con ese ID",
+          STATUS_CODE.NOT_FOUND,
+          errorArgumentoUser(uid)
+        );
+      }
       return user;
     } catch (error) {
       throw new Error(`Error al buscar el usuario por ID: ${error.message}`);
@@ -50,7 +68,12 @@ export class UserService {
     try {
       const user = await UserDao.getUser();
       if (!user) {
-        res.status(400)({ error: "No se encontraron usuarios" });
+        throw new CustomError(
+          "CustomError",
+          "UserService - users - No se encontro los usuario en BD",
+          STATUS_CODE.NOT_FOUND,
+          errorBdUser()
+        );
       }
       return user;
     } catch {
@@ -72,6 +95,15 @@ export class UserService {
   static async getDeletedUsers() {
     try {
       const deletedUsers = await usuarioModels.find({ deleted: true });
+      if (!deletedUsers) {
+        throw new CustomError(
+          "CustomError",
+          "UserService - getDeletedUsers - No se encontro los usuario eliminado en BD",
+          STATUS_CODE.NOT_FOUND,
+          errorBdUserDeleted()
+        );
+      }
+
       return deletedUsers;
     } catch (error) {
       throw new Error(
@@ -85,32 +117,42 @@ export class UserService {
       const usuario = await usuarioModels.findOne({ email });
 
       if (!usuario) {
-        return done(null, false, { message: "Correo electrónico no encontrado" });
+        throw new CustomError(
+          "CustomError",
+          "UserService - sendRecoverPasswordEmail - No se encontro los usuario por email",
+          STATUS_CODE.NOT_FOUND,
+          ErrorDataUSer(email)
+        );
       }
-
       const resetToken = generatePasswordResetToken(usuario.email);
 
       usuario.resetToken = resetToken;
       await usuario.save();
 
-      const mensaje = `Puede restablecer su contraseña desde el siguiente enlace: http://localhost:8080/reset-password?token=${resetToken}`
-      const emailsent = await sendEmail({ to: usuario.email, subject: 'Recuperación de contraseña', message: mensaje });
+      const mensaje = `Puede restablecer su contraseña desde el siguiente enlace: http://localhost:8080/reset-password?token=${resetToken}`;
+      const emailsent = await sendEmail({
+        to: usuario.email,
+        subject: "Recuperación de contraseña",
+        message: mensaje,
+      });
 
-      return emailsent
+      return emailsent;
     } catch (error) {
       throw new Error(`Error al enviar email de recueperación`);
     }
   }
 
   static async resetUserPassword(email) {
-    // Check if the user exists in the database
     const user = await usuarioModels.findOne({ email });
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+    if (!usuario) {
+      throw new CustomError(
+        "CustomError",
+        "UserService - sendRecoverPasswordEmail - No se encontro los usuario por email",
+        STATUS_CODE.NOT_FOUND,
+        ErrorDataUSer(email)
+      );
     }
-    // Generate and send password reset token to the user's email
+
     const resetToken = generatePasswordResetToken(email);
-    // Send resetToken to the user's email
-    // (You need to implement the email sending functionality)
   }
 }

@@ -8,7 +8,12 @@ export class UserController {
     try {
       const user = await UserService.findUserById(uid);
       if (!user) {
-        return res.status(404).json({ error: "Usuario no encontrado" });
+        throw new CustomError(
+          "CustomError",
+          "UserService - sendRecoverPasswordEmail - No se encontro los usuario por email",
+          STATUS_CODE.NOT_FOUND,
+          errorArgumentoUser(uid)
+        );
       }
       if (user.rol === "premium") {
         const updatedUser = await UserService.updateUserRole(uid, "usuario");
@@ -37,13 +42,16 @@ export class UserController {
 
   static async updateUserDocumentStatus(req, res) {
     const uid = req.session.userId;
-    console.log("Valor de req.session.userId:", req.session.userId);
     try {
       const user = await UserService.findUserById(uid);
       if (!user) {
-        return res.status(404).json({ message: "Usuario no encontrado" });
+        throw new CustomError(
+          "CustomError",
+          "UserService - sendRecoverPasswordEmail - No se encontro los usuario por email",
+          STATUS_CODE.NOT_FOUND,
+          errorArgumentoUser(uid)
+        );
       }
-
       user.documentos = Object.keys(req.files).map((fieldname) => ({
         name: req.files[fieldname][0].originalname,
         reference: req.files[fieldname][0].filename,

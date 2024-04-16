@@ -23,7 +23,7 @@ export class ProductService {
       if (!product) {
         throw new CustomError(
           "CustomError",
-          "No se encontro un producto con ese ID",
+          "ProductService - getProductById - No se encontro un producto con ese ID",
           STATUS_CODE.NOT_FOUND,
           errorArgumentoProductos(id)
         );
@@ -43,7 +43,7 @@ export class ProductService {
     } catch (error) {
       throw new CustomError(
         "CustomError",
-        "No se pudo crear el producto",
+        "ProductService - createProduct - No se pudo crear el producto",
         STATUS_CODE.ERROR_BAD_REQUEST,
         error
       );
@@ -56,7 +56,7 @@ export class ProductService {
     } catch (error) {
       throw new CustomError(
         "CustomError",
-        "No se pudo actualizar el producto",
+        "ProductService - updateProduct - No se pudo actualizar el producto",
         STATUS_CODE.ERROR_BAD_REQUEST,
         errorArgumentoProductos(id)
       );
@@ -69,7 +69,7 @@ export class ProductService {
       if (!existingProduct) {
         throw new CustomError(
           "CustomError",
-          "No se encontro un producto con ese ID",
+          "ProductService - deletedProduct - No se encontro un producto con ese ID",
           STATUS_CODE.NOT_FOUND,
           errorArgumentoProductos(id)
         );
@@ -81,7 +81,7 @@ export class ProductService {
       } else {
         throw new CustomError(
           "CustomError",
-          "No se pudo eliminar el producto",
+          "ProductService - deletedProduct - No se pudo eliminar el producto",
           STATUS_CODE.ERROR_BAD_REQUEST,
           errorArgumentoProductos(id)
         );

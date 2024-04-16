@@ -9,7 +9,14 @@ export class CartController {
   static async getCart(req, res) {
     try {
       const cart = await CartService.getCart();
-      console.log(cart);
+      if (!cart) {
+        throw new CustomError(
+          "CustomError",
+          "CartController - getCart - No hay carrito en la BD",
+          STATUS_CODE.NOT_FOUND,
+          errorBdCart()
+        );
+      }
       res.status(200).json(cart);
     } catch (error) {
       res.status(500).json({
@@ -32,10 +39,12 @@ export class CartController {
           productIds
         );
         if (ownedProducts.length > 0) {
-          return res.status(403).json({
-            error:
-              "Un usuario premium no puede agregar sus propios productos al carrito.",
-          });
+          throw new CustomError(
+            "CustomError",
+            "CartController - postCart - Un usuario premium no puede agregar sus propios productos al carrito.",
+            STATUS_CODE.FORBIDDEN,
+            ""
+          );
         }
       }
 
@@ -43,7 +52,6 @@ export class CartController {
 
       res.status(200).json({ newCart });
     } catch (error) {
-      console.error(error.message);
       res.status(500).json({
         error: "Error inesperado del lado del servidor",
         details: error.message,
@@ -62,7 +70,7 @@ export class CartController {
       ) {
         throw new CustomError(
           "CustomError",
-          "Un usuario premium no puede agregar a su carrito un producto que le pertenece",
+          "CartController - putCart - Un usuario premium no puede agregar a su carrito un producto que le pertenece",
           STATUS_CODE.FORBIDDEN,
           ""
         );
@@ -71,7 +79,6 @@ export class CartController {
       const updateCart = await CartService.updateCart(cid, pid, quantity);
       res.status(201).json(updateCart);
     } catch (error) {
-      console.error(error.message);
       res.status(500).json({
         error: "Error inesperado del lado del servidor",
         details: error.message,
@@ -88,6 +95,14 @@ export class CartController {
 
     try {
       const result = await CartService.deleteProductCart(cid, pid);
+      if (!result) {
+        throw new CustomError(
+          "CustomError",
+          "CartController - deleteProductCart - No se pudo eliminar el producto del carrito",
+          STATUS_CODE.NOT_FOUND,
+          errorDeletePC(cid, pid)
+        );
+      }
       res.setHeader("Content-Type", "application/json");
       return res.status(200).json({ payload: result });
     } catch (error) {
@@ -109,6 +124,15 @@ export class CartController {
 
     try {
       const result = await CartService.deleteCart(cid);
+      if (!result) {
+        throw new CustomError(
+          "CustomError",
+          "CartController - deleteCart - No se pudo eliminar el carrito",
+          STATUS_CODE.NOT_FOUND,
+          errorArgumentoCart(cid)
+        );
+      }
+
       res.setHeader("Content-Type", "application/json");
       return res.status(200).json({
         payload: result,
@@ -127,6 +151,15 @@ export class CartController {
 
     try {
       const resultado = await CartService.purchaseCart(cid);
+      if (!resultado) {
+        throw new CustomError(
+          "CustomError",
+          "CartController - purchaseCart - ",
+          STATUS_CODE.NOT_FOUND,
+          errorArgumentoCart(cid)
+        );
+      }
+
       res.status(200).json(resultado);
     } catch (error) {
       console.error(error.message);
