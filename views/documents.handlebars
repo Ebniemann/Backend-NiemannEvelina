@@ -1,0 +1,28 @@
+<h2>Cargar Archivos</h2>
+{{#if error }}
+  <div style="color: red">{{error}}</div>
+{{/if}}
+
+{{#if message }}
+  <div style="color: green">{{message}}</div>
+{{/if}}
+<form action="/api/user/:uid/documents" method="post" enctype="multipart/form-data">
+
+  <div>
+    <h3>Foto de perfil</h3>
+    <input type="file" name="profilePhoto" />
+  </div>
+
+  <div>
+    <h3>Foto producto</h3>
+    <input type="file" name="profileProduct" />
+  </div> 
+
+  <div>
+    <h3>Documento</h3>
+    <input type="file" name="profileDocument" />
+  </div>
+
+  <input type="submit" value="Cargar">
+
+</form>
