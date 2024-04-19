@@ -2,7 +2,7 @@ import { Router } from "express";
 import { ManagerProduct } from "../dao/Manager/ProductManagerM.js";
 import { ManagerChat } from "../dao/Manager/ChatManager.js";
 import { ManagerCart } from "../dao/Manager/CartManagerM.js";
-import { TicketController } from "../controller/ticket.controller.js";
+
 
 const router = Router();
 const productManager = new ManagerProduct();
@@ -139,7 +139,7 @@ router.get("/signup", (req, res) => {
   res.render("signup", { error, mensaje, titulo: "Registro", estilos: "stylesSignup" });
 });
 
-router.get("/:ticketId", TicketController.getTicket);
+
 
 
 export default router;

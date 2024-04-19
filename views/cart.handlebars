@@ -4,15 +4,24 @@
 <hr>
 
 {{#if cart}}
+{{#each cart.carrito}}
+<p><strong>Producto:</strong> {{this.producto.title}}</p>
+<p><strong>Precio:</strong> ${{this.producto.price}}</p>
+<p><strong>Cantidad:</strong> {{this.quantity}}</p>
+<p><strong>Subtotal:</strong> ${{multiply this.producto.price this.quantity}}</p>
+<br>
+{{/each}}
+<form action="/api/cart/{{cart._id}}/purchase" method="POST">
   {{#each cart.carrito}}
-    <p><strong>Producto:</strong> {{this.producto.title}}</p>
-    <p><strong>Precio:</strong> ${{this.producto.price}}</p>
-    <p><strong>Cantidad:</strong> {{this.quantity}}</p>
-    <p><strong>Subtotal:</strong> ${{multiply this.producto.price this.quantity}}</p>
-    <br>
+  <input type="hidden" name="productos[]" value="{{this.producto._id}}">
+  <input type="hidden" name="cantidades[]" value="{{this.quantity}}">
   {{/each}}
+  <button type="submit">Finalizar compra</button>
+</form>
 {{else}}
-  <p>No hay productos en el carrito.</p>
+<p>No hay productos en el carrito.</p>
 {{/if}}
 
 <a href="/producto">Volver a la lista de productos</a>
+
+

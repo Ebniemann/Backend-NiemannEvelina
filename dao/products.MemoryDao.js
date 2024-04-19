@@ -55,20 +55,8 @@ export class ProductDao {
     }
   }
 
-  static async getProductsPrice(id) {
-    try {
-      const productos = await productsModels.findById(id);
-      if (!productos) {
-        throw new Error("Producto no encontrado");
-      }
-      return productos.price;
-    } catch (error) {
-      console.error(error.message);
-      throw new Error("Error al obtener el precio del producto");
-    }
-  }
-  static async getValidaStock(id) {
-    const producto = await productsModels.findById(id);
+  static async getValidaStock(pid) {
+    const producto = await productsModels.findById(pid);
     return producto ? producto.stock : 0;
   }
 

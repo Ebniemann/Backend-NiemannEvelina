@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
-import { productsModels } from "../dao/models/products.models.js";
-import { ProductService } from "../services/products.service.js";
+import { ProductService } from "../Services/product.service.js";
 import { STATUS_CODE } from "../errors/tiposError.js";
 
 export class ProductController {
