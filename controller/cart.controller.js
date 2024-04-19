@@ -4,6 +4,7 @@ import { CartService } from "../services/cart.service.js";
 import { ProductService } from "../Services/product.service.js";
 import { STATUS_CODE } from "../errors/tiposError.js";
 import { TicketService } from "../services/ticket.service.js";
+import { sendEmail } from "../mailer/index.js";
 
 export class CartController {
   static async getCart(req, res) {
@@ -192,6 +193,14 @@ export class CartController {
 
         const newTicket = await TicketService.createTicket(ticketData);
         const formattedDate = newTicket.purchase_datetime.toLocaleDateString('es-AR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+
+        const emailInfo = await sendEmail({
+          to: req.user.email,
+          subject: 'Compra exitosa',
+          message: `¡Gracias por tu compra! Tu ticket de compra es: ${newTicket.code}. Puedes ver los detalles en tu perfil.`
+      });
+
         res.render('ticket', {
           ticket: { code: newTicket.code, purchase_datetime: formattedDate },
           user: req.user.email,
@@ -202,8 +211,5 @@ export class CartController {
     } catch (error) {
         res.status(500).json({ error: "no se creo el ticket" });
     }
-}
-
-
-
+ }
 }
