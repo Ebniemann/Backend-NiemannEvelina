@@ -1,9 +1,7 @@
 import { Server } from "socket.io";
-import ProductManager from "./dao/Manager/ProductManagerFS.js";
 import { ManagerChat } from "./dao/Manager/ChatManager.js";
 import { chatModels } from "./dao/models/chat.models.js";
 
-const products = new ProductManager("./archivo.json");
 const chatManager = new ManagerChat();
 
 const setupSocket = (server) => {
@@ -33,11 +31,6 @@ const setupSocket = (server) => {
       }
     });
 
-    socket.emit("products", { products: products.getProduct() });
-
-    socket.on("nuevoProducto", (datos) => {
-      io.emit("verProduct", { datos });
-    });
 
     socket.on("id", (nombre) => {
       users.push({ nombre, id: socket.id });
