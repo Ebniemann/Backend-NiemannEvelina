@@ -8,7 +8,7 @@ import { errorArgumentoCart } from "../errors/erroresCart.js";
 import { ProductDao } from "../dao/products.MemoryDao.js";
 
 export class CartService {
-  static async getCart() {
+  static async getCart(res) {
     try {
       const carts = await CartDao.getCart();
       if (!carts) {
@@ -27,7 +27,7 @@ export class CartService {
         .json({ error: "Error inesperado del lado del servidor" });
     }
   }
-  static async getCartById(cid) {
+  static async getCartById(res, cid) {
     try {
       const cartId = await CartDao.findCartById(cid);
       if (!cartId) {
@@ -101,24 +101,22 @@ export class CartService {
     }
   }
 
-  static async deleteProductCart(cid, pid) {
+  static async deleteProductCart(cartId, productId) {
     try {
-      const cart = await CartDao.findCartById(cid);
-
+      const cart = await CartDao.findCartById(cartId);
+  
       if (!cart) {
         throw new CustomError(
           "CustomError",
           "CartService - deleteProductCart - No se encontro un carrito con ese ID",
           STATUS_CODE.NOT_FOUND,
-          errorArgumentoCart(cid)
+          errorArgumentoCart(cartId)
         );
       }
-
-      const updateQuery = { $pull: { productos: { _id: pid } } };
-
-      const result = await CartDao.updateCart(cid, updateQuery);
-
-      if (result.nModified > 0) {
+  
+      const result = await CartDao.deleteProductFromCart(cartId, productId);
+  
+      if (result) {
         return "Eliminación exitosa";
       } else {
         throw new CustomError(
@@ -131,6 +129,7 @@ export class CartService {
       throw error;
     }
   }
+  
 
   static async deleteCart(cid) {
     try {

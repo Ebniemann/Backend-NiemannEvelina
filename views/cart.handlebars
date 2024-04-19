@@ -8,6 +8,7 @@
 <p><strong>Producto:</strong> {{this.producto.title}}</p>
 <p><strong>Precio:</strong> ${{this.producto.price}}</p>
 <p><strong>Cantidad:</strong> {{this.quantity}}</p>
+<button class="eliminar-producto" data-cid="{{../cart._id}}" data-pid="{{this.producto._id}}">Eliminar</button>
 <p><strong>Subtotal:</strong> ${{multiply this.producto.price this.quantity}}</p>
 <br>
 {{/each}}
@@ -24,4 +25,30 @@
 
 <a href="/producto">Volver a la lista de productos</a>
 
+<script>
 
+document.addEventListener('DOMContentLoaded', () => {
+  const botonesEliminar = document.querySelectorAll('.eliminar-producto');
+  
+  botonesEliminar.forEach(boton => {
+    boton.addEventListener('click', async () => {
+      const cid = boton.getAttribute('data-cid');
+      const pid = boton.getAttribute('data-pid');
+      
+      try {
+        const response = await fetch(`/api/cart/${cid}/product/${pid}`, {
+          method: 'DELETE'
+        });
+        
+        if (response.ok) {
+          location.reload(); 
+        } else {
+          console.error('Error al eliminar el producto del carrito');
+        }
+      } catch (error) {
+        console.error('Error de red:', error);
+      }
+    });
+  });
+});
+</script>

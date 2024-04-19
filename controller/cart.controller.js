@@ -104,8 +104,7 @@ export class CartController {
           errorDeletePC(cid, pid)
         );
       }
-      res.setHeader("Content-Type", "application/json");
-      return res.status(200).json({ payload: result });
+      res.status(200).json({ message: "Producto eliminado del carrito exitosamente" });
     } catch (error) {
       console.error(error.message);
       res.setHeader("Content-Type", "application/json");

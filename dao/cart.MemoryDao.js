@@ -36,12 +36,17 @@ export class CartDao {
     }
   }
 
-  static async updateCart(cid, updateQuery) {
+  static async deleteProductFromCart(cartId, productId) {
     try {
-      const existe = await cartModel.updateOne({ _id: cid }, updateQuery);
-      return existe;
+      const result = await cartModel.updateOne(
+        { _id: cartId },
+        { $pull: { carrito: { producto: productId } } }
+      );
+  
+      return result.nModified > 0;
     } catch (error) {
       throw error;
     }
   }
+  
 }
