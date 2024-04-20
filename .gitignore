@@ -15,6 +15,6 @@ package-lock.json
 dist/
 build/
 
-# Otras Carpetas
+Otras Carpetas
 test/
 logs/
