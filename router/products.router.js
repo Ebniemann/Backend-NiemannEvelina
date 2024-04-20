@@ -2,6 +2,7 @@ import { Router } from "express";
 import { ProductController } from "../controller/products.controller.js";
 import { autorizacion } from "../middleware/autorizacion.js";
 import generaProducto from "../mock/product.mock.js";
+import { authenticateJWT } from "../middleware/auth.js";
 
 const productRouter = (io) => {
   const router = Router();
@@ -10,12 +11,12 @@ const productRouter = (io) => {
 
   router.get("/:id", ProductController.getProductId);
 
-  router.post("/", autorizacion(["admin"]), ProductController.postProduct);
+  router.post("/",authenticateJWT, autorizacion(["admin"]), ProductController.postProduct);
 
-  router.put("/:id", autorizacion(["admin"]), ProductController.putProduct);
+  router.put("/:id",authenticateJWT, autorizacion(["admin"]), ProductController.putProduct);
 
   router.delete(
-    "/:id",
+    "/:id",authenticateJWT,
     autorizacion(["admin"]),
     ProductController.deleteProduct
   );

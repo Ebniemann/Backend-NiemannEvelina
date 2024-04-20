@@ -40,3 +40,19 @@
 2024-04-18T01:44:12.079Z - CartService - purchaseCart - Error al procesar la compra
 2024-04-18T21:45:31.193Z - CartService - getCartById - No se encontro un carrito con ese ID
 2024-04-18T22:08:04.975Z - ProductService - getProductById - No se encontro un producto con ese ID
+2024-04-19T04:43:05.173Z - CartService - deleteProductCart - No se pudo eliminar el producto del carrito
+2024-04-19T12:16:02.716Z - CartService - deleteProductCart - No se pudo eliminar el producto del carrito
+2024-04-19T12:16:04.542Z - CartService - deleteProductCart - No se pudo eliminar el producto del carrito
+2024-04-19T12:34:35.856Z - CartService - deleteProductCart - No se pudo eliminar el producto del carrito
+2024-04-19T12:38:17.252Z - CartService - deleteProductCart - No se pudo eliminar el producto del carrito
+2024-04-19T12:38:22.587Z - CartService - deleteProductCart - No se pudo eliminar el producto del carrito
+2024-04-19T21:05:31.801Z - CartService - deleteProductCart - No se pudo eliminar el producto del carrito
+2024-04-19T21:11:31.915Z - CartService - deleteProductCart - No se pudo eliminar el producto del carrito
+2024-04-19T21:11:41.443Z - CartService - getCartById - No se encontro un carrito con ese ID
+2024-04-19T21:12:05.388Z - CartService - deleteProductCart - No se pudo eliminar el producto del carrito
+2024-04-19T21:12:35.042Z - CartService - deleteProductCart - No se pudo eliminar el producto del carrito
+2024-04-20T02:14:51.416Z - CartService - deleteProductCart - No se pudo eliminar el producto del carrito
+2024-04-20T02:14:56.022Z - CartService - getCartById - No se encontro un carrito con ese ID
+2024-04-20T02:15:08.265Z - CartService - getCartById - No se encontro un carrito con ese ID
+2024-04-20T02:15:49.624Z - CartService - getCartById - No se encontro un carrito con ese ID
+2024-04-20T02:16:53.770Z - CartService - getCartById - No se encontro un carrito con ese ID

@@ -14,6 +14,7 @@ export default __dirname;
 // Generate JWT token for password reset
 export const generatePasswordResetToken = (email) => {
   const token = jwt.sign({ email }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
+  console.log("Token JWT generado:", token);
   return token;
 };
 
@@ -32,7 +33,7 @@ export const verifyPasswordResetToken = (token) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
     console.log(decoded)
-    return decoded; // Extract email from the token
+    return decoded; 
   } catch (error) {
     throw new Error('Invalid or expired token');
   }

@@ -47,6 +47,7 @@ export class ProductController {
   }
 
   static async getProductId(req, res) {
+    console.log("Usuario autenticado:", req.user);
     let { id } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {

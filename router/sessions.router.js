@@ -2,6 +2,7 @@ import { Router } from "express";
 import { UserService } from "../Services/user.service.js";
 import { creaHash, verifyPasswordResetToken } from '../utils.js'
 import passport from "passport";
+import {generaAuthToken} from "../utils.js"
 
 const router = Router();
 
@@ -40,6 +41,13 @@ router.post("/login", passport.authenticate("login", { failureRedirect: "/api/se
   }
 
   req.session.userId = req.user._id;
+
+  
+  const token = generaAuthToken(req.user);
+
+  req.session.token = token;
+
+  console.log(token)
 
   try {
     res.redirect(successRedirect);
