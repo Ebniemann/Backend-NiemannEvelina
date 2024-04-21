@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import { CartService } from "../services/cart.service.js";
 import { ProductService } from "../services/products.service.js";
 import { STATUS_CODE } from "../errors/tiposError.js";
+import { TicketService } from "../services/ticket.service.js";
 
 export class CartController {
   static async getCart(req, res) {
@@ -146,27 +147,71 @@ export class CartController {
     }
   }
 
-  static async purchaseCart() {
-    const { cid } = req.params;
-
+  static async purchaseCart(req, res) {
     try {
-      const resultado = await CartService.purchaseCart(cid);
-      if (!resultado) {
-        throw new CustomError(
-          "CustomError",
-          "CartController - purchaseCart - ",
-          STATUS_CODE.NOT_FOUND,
-          errorArgumentoCart(cid)
-        );
+      const { cid } = req.params;
+
+      const cart = await CartService.getCartById(cid);
+
+      function ticketCode() {
+        const timestamp = Date.now().toString();
+        const randomNumber = Math.floor(Math.random() * 10000)
+          .toString()
+          .padStart(4, "0");
+        return `${timestamp}-${randomNumber}`;
+      }
+      let totalAmount = 0;
+
+      for (const item of cart.carrito) {
+        try {
+          const product = await ProductService.getProductById(item.producto);
+          const productPrice = await ProductService.getProductPrice(product);
+          totalAmount += productPrice * item.quantity;
+        } catch (error) {
+          console.error("Error retrieving product:", error);
+        }
       }
 
-      res.status(200).json(resultado);
-    } catch (error) {
-      console.error(error.message);
-      res.status(500).json({
-        error: "Error inesperado del lado del servidor",
-        details: error.message,
+      const successfulProducts = [];
+      const unsuccessfulProducts = [];
+
+      for (const item of cart.carrito) {
+        const product = await ProductService.getProductById(item.producto);
+        console.log(product);
+        if (product.stock >= item.quantity) {
+          successfulProducts.push(product);
+        } else {
+          unsuccessfulProducts.push(product);
+        }
+      }
+
+      const ticketData = {
+        code: ticketCode(),
+        purchase_datetime: new Date(),
+        amount: totalAmount,
+        purchaser: req.user.email,
+      };
+
+      const newTicket = await TicketService.createTicket(ticketData);
+      const formattedDate = newTicket.purchase_datetime.toLocaleDateString(
+        "es-AR",
+        { weekday: "long", year: "numeric", month: "long", day: "numeric" }
+      );
+      res.render("ticket", {
+        ticket: { code: newTicket.code, purchase_datetime: formattedDate },
+        user: req.user.email,
+        amount: totalAmount,
+        successfulProducts: successfulProducts.map((product) => ({
+          title: product.title,
+          quantity: product.quantity,
+        })),
+        unsuccessfulProducts: unsuccessfulProducts.map((product) => ({
+          title: product.title,
+          quantity: product.quantity,
+        })),
       });
+    } catch (error) {
+      res.status(500).json({ error: "no se creo el ticket" });
     }
   }
 }
