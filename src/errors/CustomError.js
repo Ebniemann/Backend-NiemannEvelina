@@ -12,12 +12,12 @@ export class CustomError extends Error {
   }
 
   static logError(error) {
-    const logFilePath = path.join(__dirname, "logs.txt"); // Ruta del archivo de registro
+    const logFilePath = path.join(__dirname, "logs.txt"); 
 
-    // Formato del mensaje de registro con la fecha y hora actual
+
     const logMessage = `${new Date().toISOString()} - ${error.message}\n`;
 
-    // Escribir el mensaje de registro en el archivo
+ 
     fs.appendFile(logFilePath, logMessage, (err) => {
       if (err) {
         console.error("Error al guardar el registro:", err);
