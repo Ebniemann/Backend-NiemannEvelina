@@ -30,11 +30,12 @@ export class ProductService {
       }
       return product;
     } catch (error) {
-      res.setHeader("Content-Type", "application/json");
-      return res
-        .status(500)
-        .json({ error: "Error inesperado del lado del servidor" });
-    }
+      throw new CustomError(
+        "CustomError",
+        "ProductService - getProductById - Error inesperado del lado del servidor",
+        STATUS_CODE.INTERNAL_SERVER_ERROR,
+        error
+   ) }
   }
 
   static async createProduct(productData) {
@@ -110,4 +111,24 @@ export class ProductService {
       );
     }
   }
+
+  static async getProductPrice(productId) {
+    try {
+      const product = await ProductDao.findProductById(productId);
+      if (!product) {
+        throw new Error("El producto no existe");
+      }
+
+      // Verificar si se obtiene correctamente el documento del producto con todos sus campos
+      console.log("Producto encontrado:", product);
+
+      // Acceder al precio del producto y mostrarlo en la consola
+      console.log("Precio del producto:", product.price);
+
+      return product.price;
+    } catch (error) {
+      // Manejo de errores
+      throw new Error("Error al obtener el precio del producto");
+    }
+}
 }
