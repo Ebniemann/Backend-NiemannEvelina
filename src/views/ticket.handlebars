@@ -1,0 +1,49 @@
+ <h1>Detalle del Ticket</h1>
+  <hr>
+
+  <h2>Productos Exitosos</h2>
+  <ul>
+    {{#each successfulProducts}}
+    <li>{{ this.title }} </li>
+    {{/each}}
+  </ul>
+
+  <h2>Productos No Exitosos</h2>
+  <ul>
+    {{#each unsuccessfulProducts}}
+    <li>{{ this.title }} </li>
+    {{/each}}
+  </ul>
+<hr>
+  <p><strong>Código:</strong> {{ ticket.code }}</p>
+  <p><strong>Fecha de Compra:</strong> {{ ticket.purchase_datetime }}</p>
+  <p><strong>Monto Total:</strong> ${{ amount }}</p>
+  <p><strong>Comprador:</strong> {{ user }}</p>
+
+  <hr>
+
+ <button id="agregarButton">Finalizar compra</button>
+
+ <br>
+ <br>
+
+
+
+   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script>
+  // Event listener para el botón "Agregar"
+  document.getElementById('agregarButton').addEventListener('click', function() {
+    // Mostrar SweetAlert
+    Swal.fire({
+      title: 'Compra exitosa',
+      text: '¡Gracias por tu compra!',
+      icon: 'success',
+      confirmButtonText: 'Aceptar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Redirigir al usuario a su perfil
+        window.location.href = 'http://localhost:8080/profile'; //profile Reemplaza '/perfil' con la URL de tu perfil
+      }
+    });
+  });
+</script>
