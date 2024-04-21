@@ -17,7 +17,7 @@ import sessionsRouter from "./router/sessions.router.js";
 import userRouter from "./router/user.router.js";
 import inicializarPassport from "./middleware/passport.middleware.js";
 import { errorHandler } from "./middleware/errorHandler.js";
-
+import handlebars from "handlebars"
 
 const app = express();
 const PORT = 8080;
@@ -61,10 +61,17 @@ inicializarPassport();
 app.use(passport.initialize());
 app.use(passport.session());
 
+
+
 // Set up the view engine using the engine function
 app.engine("handlebars", engine());
 app.set("view engine", "handlebars");
 app.set("views", path.join(__dirname, "/views"));
+
+// Add handlebars helpers
+handlebars.registerHelper('get', function(obj, key) {
+  return obj[key];
+});
 
 // Middleware
 app.use(express.json());
