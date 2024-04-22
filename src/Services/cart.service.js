@@ -1,12 +1,8 @@
 import { CartDao } from "../dao/cart.MemoryDao.js";
 import { productsModels } from "../dao/models/products.models.js";
-import { ProductService } from "./products.service.js";
-import { ProductDao } from "../dao/products.MemoryDao.js";
-import { TicketService } from "./ticket.service.js";
 import { CustomError } from "../Errors/CustomError.js";
 import { STATUS_CODE } from "../errors/tiposError.js";
 import { errorArgumentoCart } from "../errors/erroresCart.js";
-import { sendEmail } from "../mailer/index.js";
 
 export class CartService {
   static async getCart() {
