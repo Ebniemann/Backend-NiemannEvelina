@@ -10,7 +10,6 @@ $(function () {
       const productId = btn.getAttribute("data-product-id");
       const quantity = btn.getAttribute("data-quantity");
 
-      // Mostrar el mensaje de carga
       loading.style.display = "block";
 
       try {
@@ -18,7 +17,7 @@ $(function () {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer your-auth-token" // Reemplaza con tu token de autenticación
+            "Authorization": "Bearer your-auth-token" 
           },
         });
 
@@ -26,14 +25,13 @@ $(function () {
           throw new Error("Error al agregar el producto al carrito");
         }
 
-        // Si la solicitud se completó correctamente, puedes hacer algo aquí, como mostrar un mensaje de éxito
         console.log(`Producto ${productId} agregado al carrito correctamente`);
 
       } catch (error) {
         console.error("Error:", error.message);
-        // Aquí puedes mostrar un mensaje de error al usuario
+
       } finally {
-        // Ocultar el mensaje de carga
+
         loading.style.display = "none";
       }
     });

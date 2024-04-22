@@ -1,4 +1,4 @@
-import { UserService } from "../Services/user.service.js";
+import { UserService } from "../services/user.service.js";
 import { sendEmail } from "../mailer/index.js";
 
 export class UserController {
