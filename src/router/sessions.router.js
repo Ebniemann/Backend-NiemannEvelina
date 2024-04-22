@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { UserService } from "../Services/user.service.js";
+import { UserService } from "../services/user.service.js";
 import { creaHash, verifyPasswordResetToken } from '../utils.js'
 import passport from "passport";
 
