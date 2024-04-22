@@ -4,7 +4,6 @@ import { autorizacion } from "../middleware/autorizacion.js";
 import { authenticateJWT } from "../middleware/auth.js";
 
 const router = Router();
-
 const auth = (req, res, next) => {
   console.log('auth', req.session.usuario)
   if (!req.session.usuario) {
@@ -12,6 +11,7 @@ const auth = (req, res, next) => {
   }
   next();
 };
+
 
 router.get("/", CartController.getCart);
 
@@ -27,6 +27,6 @@ router.delete("/:cid/product/:pid", CartController.deleteProductCart);
 
 router.delete("/:cid", CartController.deleteCart);
 
-router.post("/:cid/purchase");
+router.post("/:cid/purchase", CartController.purchaseCart);
 
 export default router;
