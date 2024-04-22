@@ -6,6 +6,7 @@ import { TicketService } from "./ticket.service.js";
 import { CustomError } from "../Errors/CustomError.js";
 import { STATUS_CODE } from "../errors/tiposError.js";
 import { errorArgumentoCart } from "../errors/erroresCart.js";
+import { sendEmail } from "../mailer/index.js";
 
 export class CartService {
   static async getCart() {
@@ -157,81 +158,5 @@ export class CartService {
     }
   }
 
-  static async purchaseCart(cid) {
-    const ticketCode = () => {
-      const timestamp = Date.now().toString(36);
-      const randomChars = Math.random().toString(36).substr(2, 5);
-      return `${timestamp}-${randomChars}`.toUpperCase();
-    };
-
-    const totalCompra = (producto) => {
-      return producto.reduce((total, product) => {
-        const productoPrice = ProductDao.getProductPrice(producto.id);
-        return total + productoPrice * producto.quantity;
-      }, 0);
-    };
-
-    try {
-      const cart = await CartDao.findCartById(cid);
-
-      if (!cart) {
-        throw new CustomError(
-          "CustomError",
-          "CartService - purchaseCart - Carrito no encontrado",
-          STATUS_CODE.NOT_FOUND,
-          errorArgumentoCart(cid)
-        );
-      }
-
-      const productosCompra = cart.carrito;
-      const fallaProductos = [];
-      const productosExitosos = [];
-
-      for (const item of productosCompra) {
-        const producto = item.producto;
-        const quantityCompra = item.quantity;
-
-        const validaStock = await ProductService.getValidaStock(producto._id);
-
-        if (validaStock >= quantityCompra) {
-          await ProductService.updateStock(producto._id, quantityCompra);
-          productosExitosos.push({
-            producto: producto._id,
-            quantity: quantityCompra,
-          });
-        } else {
-          fallaProductos.push(producto._id);
-        }
-      }
-
-      const ticketData = {
-        code: ticketCode(),
-        purchase_datetime: new Date(),
-        amount: totalCompra(successfulProducts),
-        purchaser: cart.user.email,
-        productos: successfulProducts,
-      };
-
-      const ticket = await TicketService.crearTicket(ticketData);
-
-      const productosRestantes = productosCompra.filter(
-        (item) => !fallaProductos.includes(item.producto._id.toString())
-      );
-
-      cart.carrito = productosRestantes;
-      await CartDao.saveCart(cart);
-
-      return {
-        message: "Compra exitosa",
-        ticket,
-        fallaProductos,
-      };
-    } catch (error) {
-      res.setHeader("Content-Type", "application/json");
-
-      return res
-        .status(500)
-        .json({ error: "Error inesperado del lado del servidor" });
-    }
-  }
+  
 }
