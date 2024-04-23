@@ -34,7 +34,7 @@ export class ProductDao {
     }
   }
 
-  static async putProduct(id, updatedData) {
+  static async updateProduct(id, updatedData) {
     try {
       const result = await productsModels.findOne({ _id: id }, updatedData, {
         new: true,

@@ -6,7 +6,7 @@ import { errorArgumentoProductos } from "../errors/erroresProducto.js";
 export class ProductService {
   static async getProducts(query, options) {
     try {
-      return await ProductDao.getProduct(query, options);
+      return await ProductDao.getProducts(query, options);
     } catch (error) {
       throw new CustomError(
         "CustomError",

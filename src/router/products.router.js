@@ -12,7 +12,7 @@ const productRouter = (io) => {
 
   router.post("/", autorizacion(["admin"]), ProductController.postProduct);
 
-  router.put("/:id", autorizacion(["admin"]), ProductController.putProduct);
+  router.put("/:id", autorizacion(["admin"]), ProductController.updateProduct);
 
   router.delete(
     "/:id",

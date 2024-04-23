@@ -115,7 +115,7 @@ export class ProductController {
     }
   }
 
-  static async putProduct(req, res) {
+  static async updateProduct(req, res) {
     let { id } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -134,7 +134,7 @@ export class ProductController {
       if (!result) {
         throw new CustomError(
           "CustomError",
-          "ProductController - putProduct - No se pudo actualizar",
+          "ProductController - updateProduct - No se pudo actualizar",
           STATUS_CODE.NOT_FOUND,
           errorUpdateProductos(id, updatedData)
         );
