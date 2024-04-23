@@ -31,9 +31,9 @@
 
    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 <script>
-  // Event listener para el botón "Agregar"
+
   document.getElementById('agregarButton').addEventListener('click', function() {
-    // Mostrar SweetAlert
+
     Swal.fire({
       title: 'Compra exitosa',
       text: '¡Gracias por tu compra!',
@@ -41,8 +41,8 @@
       confirmButtonText: 'Aceptar'
     }).then((result) => {
       if (result.isConfirmed) {
-        // Redirigir al usuario a su perfil
-        window.location.href = 'http://localhost:8080/profile'; //profile Reemplaza '/perfil' con la URL de tu perfil
+
+        window.location.href = 'http://localhost:8080/profile'; 
       }
     });
   });

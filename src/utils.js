@@ -31,8 +31,7 @@ export const generaAuthToken = (usuario) => {
 export const verifyPasswordResetToken = (token) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
-    console.log(decoded)
-    return decoded; // Extract email from the token
+    return decoded; 
   } catch (error) {
     throw new Error('Invalid or expired token');
   }
