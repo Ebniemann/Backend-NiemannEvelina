@@ -71,8 +71,6 @@ const loginStrategy = new local.Strategy(
       if (!usuario || !validaPassword(usuario.password, password)) {
         return done(null, false, { message: "Credenciales incorrectas" });
       }
-
-      // Actualizamos la fecha de última conexión
       usuario.conexion = Date.now();
       usuario = await usuario.save();
 

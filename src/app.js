@@ -62,13 +62,11 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 
-
-// Set up the view engine using the engine function
 app.engine("handlebars", engine());
 app.set("view engine", "handlebars");
 app.set("views", path.join(__dirname, "/views"));
 
-// Add handlebars helpers
+// handlebars helpers
 registerMultiplyHelper();
 
 // Middleware

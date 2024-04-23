@@ -91,11 +91,15 @@ router.post('/reset-password', async (req, res) => {
   try {
     const { token, password, repeat_password } = req.body;
 
+    console.log(req.body)
+
     if (password === repeat_password) {
-      // Verify the token
+     
+  
       const decryptedToken = verifyPasswordResetToken(token);
 
-      // Find the user by decryptedToken and update the password
+      console.log("token",decryptedToken)
+
       const user = await UserService.findOneAndUpdate({ email: decryptedToken.email }, { password: creaHash(password) });
 
       if (!user) {

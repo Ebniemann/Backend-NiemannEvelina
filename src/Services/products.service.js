@@ -119,15 +119,8 @@ export class ProductService {
         throw new Error("El producto no existe");
       }
 
-      // Verificar si se obtiene correctamente el documento del producto con todos sus campos
-      console.log("Producto encontrado:", product);
-
-      // Acceder al precio del producto y mostrarlo en la consola
-      console.log("Precio del producto:", product.price);
-
       return product.price;
     } catch (error) {
-      // Manejo de errores
       throw new Error("Error al obtener el precio del producto");
     }
 }

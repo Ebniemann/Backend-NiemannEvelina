@@ -117,12 +117,7 @@ export class UserService {
       const usuario = await usuarioModels.findOne({ email });
 
       if (!usuario) {
-        throw new CustomError(
-          "CustomError",
-          "UserService - sendRecoverPasswordEmail - No se encontro los usuario por email",
-          STATUS_CODE.NOT_FOUND,
-          ErrorDataUSer(email)
-        );
+        return done(null, false, { message: "Correo electrónico no encontrado" });
       }
       const resetToken = generatePasswordResetToken(usuario.email);
 
@@ -144,15 +139,10 @@ export class UserService {
 
   static async resetUserPassword(email) {
     const user = await usuarioModels.findOne({ email });
-    if (!usuario) {
-      throw new CustomError(
-        "CustomError",
-        "UserService - sendRecoverPasswordEmail - No se encontro los usuario por email",
-        STATUS_CODE.NOT_FOUND,
-        ErrorDataUSer(email)
-      );
-    }
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
 
     const resetToken = generatePasswordResetToken(email);
   }
+}
 }
