@@ -25,7 +25,10 @@ export class UserService {
 
   static async findUserById(uid) {
     try {
-      const user = await usuarioModels.findById(uid);
+
+      const user = await UserDao.getUserById(uid);
+
+
       if (!user) {
         throw new CustomError(
           "CustomError",

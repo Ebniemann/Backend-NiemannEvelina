@@ -15,6 +15,8 @@ const auth = (req, res, next) => {
 
 router.get("/", CartController.getCart);
 
+router.get("/:cid", CartController.getCartById)
+
 router.post("/", CartController.postCart);
 
 router.put(
