@@ -25,6 +25,26 @@ export class CartController {
     }
   }
 
+  static async getCartById(req, res){
+    const { cid} = req.params;
+    try{
+      const cartId = await CartService.getCartById(cid)
+      if (!cart) {
+        throw new CustomError(
+          "CustomError",
+          "CartController - getCartById - No hay carrito con ese ID",
+          STATUS_CODE.NOT_FOUND,
+          errorBdCart()
+        );
+      }
+      res.status(200).json(cartId)
+    }catch{
+      res.status(500).json({
+        error: "Error inesperado del lado del servidor",
+      });
+    }
+  }
+
   static async postCart(req, res) {
     let { name, products } = req.body;
 

@@ -9,6 +9,15 @@ export class UserDao {
     }
   }
 
+  static async getUserById(id) {
+    try {
+      return usuarioModels.findById(id);
+    } catch {
+      throw new Error(`Error inesperado del lado del servidor`);
+    }
+  }
+
+
   static async removeUser() {
     try {
       const fifteenMinutesAgo = new Date();
