@@ -2,8 +2,9 @@ import { Router } from "express";
 import { ManagerProduct } from "../dao/Manager/ProductManagerM.js";
 import { ManagerChat } from "../dao/Manager/ChatManager.js";
 import { ManagerCart } from "../dao/Manager/CartManagerM.js";
+import { ProductController } from "../controller/products.controller.js";
 
-const router = Router();
+const router = Router({ strict: true });
 const productManager = new ManagerProduct();
 const chatManager = new ManagerChat();
 const cartManager = new ManagerCart();
@@ -27,11 +28,11 @@ router.get("/", (req, res) => {
   res.render("home");
 });
 
-router.get("/producto", auth, async (req, res) => {
+router.get("/producto", async (req, res) => {
   console.log('Ruta Vista /producto')
 
   try {
-    const products = await productManager.listarProductos();
+    const products = await ProductController.getProduct(req, res);
 
     const { user } = req
 
@@ -49,7 +50,7 @@ router.get("/producto", auth, async (req, res) => {
 
     res.render("producto", {
       usuario,
-      products,
+      ...products,
       titulo: "Productos",
       estilos: "stylesHome",
     });

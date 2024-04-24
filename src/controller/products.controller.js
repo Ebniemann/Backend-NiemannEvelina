@@ -25,13 +25,14 @@ export class ProductController {
         query,
         options
       );
+
       const totalPages = Math.ceil(totalDocs / limit);
       const hasNextPage = page < totalPages;
       const hasPrevPage = page > 1;
       const nextPage = hasNextPage ? page + 1 : null;
       const prevPage = hasPrevPage ? page - 1 : null;
 
-      res.status(200).render("producto", {
+      return {
         products: docs,
         totalPages,
         hasNextPage,
@@ -39,10 +40,10 @@ export class ProductController {
         prevPage,
         nextPage,
         limit,
-      });
+      };
     } catch (error) {
       console.error(error.message);
-      res.status(500).json({ error: "Error al obtener productos" });
+      return { error: "Error al obtener productos" };
     }
   }
 

@@ -77,7 +77,7 @@ app.use(express.static(path.join(__dirname, "/public")));
 app.use(loggerMiddleware);
 
 // Routes
-app.use("/api/products", productRouter(socketIo));
+app.use("/api/products", productRouter);
 app.use("/api/cart", cartRouter);
 app.use("/api/user", userRouter);
 app.use("/api/sessions", sessionsRouter);
