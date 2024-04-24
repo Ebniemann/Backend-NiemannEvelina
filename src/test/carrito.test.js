@@ -10,11 +10,13 @@ await mongoose.connect(
 const requester = supertest("http//localhots:8080");
 
 describe('Pruebas de los endpoints del carrito', () => {
-  it('Debería obtener el carrito correctamente', async () => {
-    const res = await request(app)
-      .get('/')
-      .expect(200);
-
+  it('Ruta api/cart/:cid Debería obtener el carrito por id', async () => {
+   let cid= "65eee5cbd6fe86130c044c37";
+   let { statusCode, body, ok } = await requester.get(`/api/products/${cid}`);
+   expect(statusCode).to.be.equal(200);
+   expect(body.payload._id).to.be.exist;
+   expect(ok).to.be.true;
+      
     expect(res.body).to.be.an('array');
   });
 
